@@ -33,7 +33,7 @@
 - Create: `plutobv-website/README.md`
 
 **Interfaces:**
-- Produces: repo-level ignore rules and a README that later tasks (20, 22) extend — do not remove existing headings when editing it later.
+- Produces: repo-level ignore rules and a README that Task 25 extends — do not remove existing headings when editing it later.
 
 - [ ] **Step 1: Write `.gitignore`**
 
@@ -2749,8 +2749,10 @@ git commit -m "feat: add scroll-reveal animation and print button wiring"
   message: string }` back — this exact response shape is what Tasks 18–20's PHP
   handlers must return.
 - This task only reaches Task 18–20's endpoints once those exist; until then,
-  submissions will fail at the network request, which is expected and re-tested
-  in Task 23 once the backend exists.
+  submissions will fail at the network request, which is expected. Tasks
+  18–20's own curl tests re-test the request/response contract once each
+  handler exists, and Task 25's post-deploy checklist re-tests a full,
+  real, end-to-end submission through the actual UI.
 
 - [ ] **Step 1: Append to `assets/js/main.js`**
 
