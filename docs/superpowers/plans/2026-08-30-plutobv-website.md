@@ -892,9 +892,10 @@ git commit -m "feat: add original generated photography"
 - Consumes: header/footer from Task 4, classes from Task 5, images from Task 6.
 - Produces: `assets/css/pages.css`'s first section styles (`.hero`, `.feature-grid`,
   `.section-head`, `.testimonial-track`, `.process-list`, `.value-band`,
-  `.news-grid`, `.cta-band`) — every later page task appends to this same file
-  rather than duplicating these rules, and reuses these exact class names for the
-  same kind of section.
+  `.card-grid`/`.card-grid--3`/`.card-grid--4`, `.cta-band`) — every later page
+  task appends to this same file rather than duplicating these rules, and reuses
+  these exact class names for the same kind of section (news/blog-style card
+  grids reuse `.card-grid--3`, there is no separate `.news-grid` class).
 
 - [ ] **Step 1: Write `index.html`**
 
