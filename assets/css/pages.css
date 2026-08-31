@@ -145,3 +145,8 @@
   border-radius: 50%;
   background: var(--color-accent);
 }
+
+/* ---- Form pages ---- */
+.page-hero { padding-block: var(--space-7) var(--space-5); }
+.form-page { max-width: 640px; }
+.form-status:empty { display: none; }
