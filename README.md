@@ -5,9 +5,24 @@ PHP form backend. No build step — deploy by uploading this folder's contents.
 
 ## Local development
 
-Open any `.html` file directly in a browser, or serve the folder with any static
-file server. The PHP backend under `backend/` needs a PHP-capable host (see
-Deployment below) — it will not run from a plain static file server.
+**Don't open the `.html` files directly by double-clicking them or pasting a
+`file://` path into the address bar.** Every page loads its CSS/JS/images via
+root-relative paths (`/assets/css/base.css`, not `assets/css/base.css`) so the
+exact same header/footer markup works at any folder depth and matches how the
+site is served once deployed. A `file://` URL has no concept of a site root,
+so a root-relative path resolves to the root of your entire hard drive —
+nothing loads, and the page renders as unstyled text. This is expected
+`file://` behavior, not a bug in the site.
+
+Serve the folder with any static file server instead, for example:
+
+```bash
+python -m http.server 8000 --directory plutobv-website
+```
+
+then open `http://localhost:8000/`. The PHP backend under `backend/` needs a
+PHP-capable server (see Deployment below) — it won't run from a plain static
+file server, but every page's HTML/CSS/JS renders correctly this way.
 
 ## Placeholders to replace before going live
 
