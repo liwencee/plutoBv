@@ -171,13 +171,11 @@ document.querySelectorAll('[data-action="print"]').forEach(function (btn) {
   function goTo(index) {
     slides[current].classList.remove('is-active');
     dots[current].classList.remove('is-active');
-    dots[current].setAttribute('aria-selected', 'false');
 
     current = (index + slides.length) % slides.length;
 
     slides[current].classList.add('is-active');
     dots[current].classList.add('is-active');
-    dots[current].setAttribute('aria-selected', 'true');
   }
 
   function start() {
