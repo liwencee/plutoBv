@@ -20,8 +20,11 @@ Deployment below) — it will not run from a plain static file server.
 1. In hPanel, open **File Manager** (or connect via FTP/SFTP with the
    credentials from hPanel → Files → FTP Accounts).
 2. Upload everything in this folder **except** `docs/`, `scripts/`, `.git/`,
-   and `.gitignore` into `public_html/` (or your domain's document root if
-   using an add-on domain). No build step — upload the files as they are.
+   `.gitignore`, and `.superpowers/` into `public_html/` (or your domain's
+   document root if using an add-on domain). No build step — upload the
+   files as they are. `.superpowers/` holds internal build artifacts (task
+   briefs, implementer/reviewer reports, the SDD ledger) and must not end up
+   on the live site.
 3. Confirm `plutobv.co.uk` (and `www.plutobv.co.uk`) point at this hosting
    account in hPanel → Domains, and that a free SSL certificate is issued and
    active under hPanel → SSL (Hostinger issues these automatically for
