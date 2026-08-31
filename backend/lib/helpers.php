@@ -1,6 +1,14 @@
 <?php
 declare(strict_types=1);
 
+// Never let a PHP warning/notice (e.g. a misconfigured mail transport, a
+// missing fileinfo extension) leak internal paths into the response body or
+// corrupt the {success, message} JSON contract the frontend depends on.
+// Errors are still generated (and logged per the host's php.ini) — only
+// on-screen display is suppressed, independent of the host's own default.
+ini_set('display_errors', '0');
+error_reporting(E_ALL);
+
 function sanitize_text(string $value, int $maxLength = 2000): string
 {
     $value = trim($value);
