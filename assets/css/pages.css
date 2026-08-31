@@ -1,10 +1,13 @@
 /* ---- Hero ---- */
+/* No padding-block here: the wrapping <section class="section"> (or
+   "about-hero", which sets the same value) already supplies vertical
+   section padding. Adding it again here was doubling the hero's top/bottom
+   whitespace to 128px versus every other section's 64px. */
 .hero__grid {
   display: grid;
   grid-template-columns: 1.1fr 1fr;
   gap: var(--space-8);
   align-items: center;
-  padding-block: var(--space-8);
 }
 
 .hero__content { display: flex; flex-direction: column; gap: var(--space-4); align-items: flex-start; }
@@ -25,6 +28,18 @@
   grid-template-columns: repeat(3, 1fr);
   gap: var(--space-6);
 }
+
+/* Matches the site's card language (surface + radius-lg + shadow-sm, as
+   used by .card/.service-card) so feature items read as content blocks
+   rather than bare, unstyled text sitting in a grid. */
+.feature {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-5);
+}
+
+.feature h3 { margin-bottom: var(--space-2); }
 
 @media (max-width: 760px) {
   .feature-grid { grid-template-columns: 1fr; }
