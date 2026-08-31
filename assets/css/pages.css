@@ -121,3 +121,27 @@
 @media (max-width: 560px) {
   .value-grid.feature-grid { grid-template-columns: 1fr; }
 }
+
+/* ---- Service detail pages ---- */
+.detail-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: 640px;
+}
+
+.detail-list li {
+  padding-left: var(--space-6);
+  position: relative;
+}
+
+.detail-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
