@@ -96,13 +96,15 @@ function validate_upload(?array $file, array $allowedExtensions, array $allowedM
         return [false, 'That file type is not accepted.'];
     }
 
-    if (function_exists('finfo_open')) {
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mime = finfo_file($finfo, $file['tmp_name']);
-        finfo_close($finfo);
-        if (!in_array($mime, $allowedMimeTypes, true)) {
-            return [false, 'That file type is not accepted.'];
-        }
+    if (!function_exists('finfo_open')) {
+        return [false, 'Unable to verify file type. Please try again later.'];
+    }
+
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    $mime = finfo_file($finfo, $file['tmp_name']);
+    finfo_close($finfo);
+    if (!in_array($mime, $allowedMimeTypes, true)) {
+        return [false, 'That file type is not accepted.'];
     }
 
     return [true, ''];
@@ -149,5 +151,5 @@ function send_notification_email(string $to, string $subject, string $textBody, 
         . "MIME-Version: 1.0\r\n"
         . "Content-Type: {$contentType}\r\n";
 
-    return mail($to, strip_header_injection($subject), $body, $headers);
+    return mail(strip_header_injection($to), strip_header_injection($subject), $body, $headers);
 }
