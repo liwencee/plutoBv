@@ -15,21 +15,42 @@ Deployment below) — it will not run from a plain static file server.
 - Phone number: search for `[Your Phone Number]`
 - Testimonial quotes: search for `[Client testimonial goes here]`
 
+## Prerequisites
+
+- PHP 7.4 or later, with the `fileinfo` extension enabled (Hostinger enables
+  it by default). If `apply.html` or `timesheet.html` uploads always fail
+  with "Unable to verify file type. Please try again later.", check this
+  first — `validate_upload()` in `backend/lib/helpers.php` refuses to accept
+  a file if `finfo_open` isn't available.
+
 ## Deployment (Hostinger shared hosting)
 
 1. In hPanel, open **File Manager** (or connect via FTP/SFTP with the
    credentials from hPanel → Files → FTP Accounts).
 2. Upload everything in this folder **except** `docs/`, `scripts/`, `.git/`,
-   `.gitignore`, and `.superpowers/` into `public_html/` (or your domain's
-   document root if using an add-on domain). No build step — upload the
-   files as they are. `.superpowers/` holds internal build artifacts (task
-   briefs, implementer/reviewer reports, the SDD ledger) and must not end up
-   on the live site.
-3. Confirm `plutobv.co.uk` (and `www.plutobv.co.uk`) point at this hosting
+   `.gitignore`, `.superpowers/`, `README.md`, and `LICENSE` into
+   `public_html/` (or your domain's document root if using an add-on
+   domain). No build step — upload the files as they are. `.superpowers/`
+   holds internal build artifacts (task briefs, implementer/reviewer
+   reports, the SDD ledger) and must not end up on the live site.
+   `README.md` and `LICENSE` are project documentation, not site content —
+   `README.md` in particular must never be publicly reachable, since its
+   Security notes section documents internal details (the honeypot
+   mechanism, the lack of rate-limiting, backend file paths) that shouldn't
+   be handed to anyone probing the live site.
+3. Hostinger's File Manager (and many FTP clients) hide dotfiles by
+   default. Before or while uploading, enable **Show Hidden Files** in File
+   Manager (or the equivalent setting in your FTP client), and specifically
+   confirm that both `.htaccess` (project root) and `backend/lib/.htaccess`
+   were uploaded. Missing the root `.htaccess` means no HTTPS redirect, no
+   security headers, and no custom 404 page; missing `backend/lib/.htaccess`
+   means `backend/lib/helpers.php` becomes publicly readable, since that's
+   the file that denies direct access to the `backend/lib/` folder.
+4. Confirm `plutobv.co.uk` (and `www.plutobv.co.uk`) point at this hosting
    account in hPanel → Domains, and that a free SSL certificate is issued and
    active under hPanel → SSL (Hostinger issues these automatically for
    domains pointed at it, usually within a few minutes to hours).
-4. Photography is still pending. 12 image files are referenced across the
+5. Photography is still pending. 12 image files are referenced across the
    site but don't exist yet under `assets/images/` — generation was blocked
    on an external credits issue during the build:
    - `hero-team.jpg`, `hero-slide-2.jpg`, `hero-slide-3.jpg`
@@ -41,13 +62,13 @@ Deployment below) — it will not run from a plain static file server.
 
    The site is otherwise complete and functional, but these will show as
    broken images until generated and added to `assets/images/`.
-5. Replace every placeholder before telling anyone the site is live:
+6. Replace every placeholder before telling anyone the site is live:
    - `[Your Street Address]` — search across all files
    - `[Your Phone Number]` — search across all files
    - `"[Client testimonial goes here]"` — replace with real client quotes, or
      remove the testimonial section from `index.html` if you don't have any
      yet
-6. Post-deploy checklist:
+7. Post-deploy checklist:
    - Visit the live domain over `https://` and confirm it loads with no
      browser mixed-content warnings.
    - Visit `http://plutobv.co.uk` (no `s`) and confirm it redirects to
@@ -64,6 +85,9 @@ Deployment below) — it will not run from a plain static file server.
      in `backend/lib/helpers.php` to send via SMTP instead (Hostinger
      provides SMTP credentials in hPanel → Emails), for example with
      PHPMailer — this is the one place a small library is worth adding later.
+   - As an extra sanity check, if SSH access is available on your hosting
+     plan, run `php backend/lib/helpers.test.php` over SSH to verify the
+     backend helper functions behave as expected on the live server.
 
 ## Security notes
 
