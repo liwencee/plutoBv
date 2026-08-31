@@ -186,6 +186,10 @@
 .reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
 .reveal--visible { opacity: 1; transform: none; }
 
+@media print {
+  .reveal { opacity: 1 !important; transform: none !important; }
+}
+
 /* ---- Hero slider ---- */
 .hero-slider {
   position: relative;

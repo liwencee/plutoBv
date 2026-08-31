@@ -78,7 +78,7 @@ function respond(bool $success, string $message, string $redirectUrl, int $httpC
     if (wants_json()) {
         send_json($success, $message, $httpCode);
     }
-    send_redirect($redirectUrl . ($success ? '' : '?error=1'));
+    send_redirect($success ? $redirectUrl : '/submission-error.html');
 }
 
 /**
