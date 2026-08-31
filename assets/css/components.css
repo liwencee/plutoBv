@@ -260,7 +260,7 @@
   padding-block: var(--space-8);
 }
 
-.footer__col h4 { color: #fff; margin-bottom: var(--space-3); }
+.footer__col h2 { color: #fff; font-size: 1.05rem; margin-bottom: var(--space-3); }
 .footer__col ul { display: flex; flex-direction: column; gap: var(--space-2); }
 .footer__col a { color: rgba(255,255,255,0.85); }
 .footer__col a:hover { color: #fff; text-decoration: underline; }
