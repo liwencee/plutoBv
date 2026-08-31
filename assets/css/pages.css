@@ -150,3 +150,14 @@
 .page-hero { padding-block: var(--space-7) var(--space-5); }
 .form-page { max-width: 640px; }
 .form-status:empty { display: none; }
+
+/* ---- Article pages ---- */
+.article {
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  font-size: 1.05rem;
+}
+
+.article img { width: 100%; height: auto; }
