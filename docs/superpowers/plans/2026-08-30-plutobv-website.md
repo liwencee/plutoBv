@@ -3858,3 +3858,204 @@ Run: `git log --oneline` and `git status`
 Expected: a clean working tree, and a commit history that reads as one task per
 commit from Task 1 through this one.
 
+---
+
+## Addendum: Task 26 — Hero image slider
+
+Added mid-build, after Task 23, per a direct user request ("hero section with
+3 images, sliding, make the website fancy"). Numbered 26 to avoid renumbering
+every cross-reference in Tasks 1-25 (a fragile exercise the self-review
+process for this plan already caught bugs in once) — but it must be
+**implemented and reviewed before Task 24**, since Task 24's QA pass (link
+checker, alt-text checker, responsive/accessibility spot-check) needs to cover
+the finished slider, not the single static hero image it replaces.
+
+### Task 26: Hero image slider
+
+**Files:**
+- Modify: `plutobv-website/index.html` (replace `.hero__media`'s single `<img>`
+  with a 3-slide crossfade slider)
+- Modify: `plutobv-website/assets/css/pages.css` (append hero-slider styles)
+- Modify: `plutobv-website/assets/js/main.js` (append slider behavior)
+
+**Interfaces:**
+- Consumes: `.hero`/`.hero__grid`/`.hero__content`/`.hero__media` from Task 7;
+  design tokens from Task 2; `.visually-hidden` from Task 2.
+- Produces: `.hero-slider`, `.hero-slider__track`, `.hero-slider__slide`,
+  `.hero-slider__dots`, `.hero-slider__dot` classes and a `[data-hero-slider]`
+  JS hook — this is the only page that uses them for now, no other task
+  depends on these names.
+- Adds two new image paths to Task 6's (still-deferred) generation list —
+  `hero-slide-2.jpg` and `hero-slide-3.jpg` — alongside the existing
+  `hero-team.jpg` (kept as slide 1). Task 6 remains blocked on the same
+  external credits issue; these two paths will show broken-image icons until
+  that's resolved, exactly like the other 10 pending images. Not a defect in
+  this task.
+
+- [ ] **Step 1: Replace `index.html`'s hero media with a 3-slide crossfade slider**
+
+Replace the existing `<div class="hero__media">...</div>` block in `index.html`
+with:
+
+```html
+<div class="hero__media">
+  <div class="hero-slider" data-hero-slider>
+    <ul class="hero-slider__track">
+      <li class="hero-slider__slide is-active" id="hero-slide-1">
+        <img src="/assets/images/hero-team.jpg" alt="A Plutobv home care worker sitting and chatting with an elderly client in her living room" width="720" height="480" loading="eager">
+      </li>
+      <li class="hero-slider__slide" id="hero-slide-2">
+        <img src="/assets/images/hero-slide-2.jpg" alt="A Plutobv support worker sharing a warm moment of companionship with a client at home" width="720" height="480" loading="lazy">
+      </li>
+      <li class="hero-slider__slide" id="hero-slide-3">
+        <img src="/assets/images/hero-slide-3.jpg" alt="A Plutobv care coordinator reviewing a staffing schedule in a bright office" width="720" height="480" loading="lazy">
+      </li>
+    </ul>
+    <div class="hero-slider__dots" role="tablist" aria-label="Hero image slides">
+      <button type="button" class="hero-slider__dot is-active" role="tab" aria-selected="true" aria-controls="hero-slide-1" data-slide-index="0"><span class="visually-hidden">Slide 1</span></button>
+      <button type="button" class="hero-slider__dot" role="tab" aria-selected="false" aria-controls="hero-slide-2" data-slide-index="1"><span class="visually-hidden">Slide 2</span></button>
+      <button type="button" class="hero-slider__dot" role="tab" aria-selected="false" aria-controls="hero-slide-3" data-slide-index="2"><span class="visually-hidden">Slide 3</span></button>
+    </div>
+  </div>
+</div>
+```
+
+- [ ] **Step 2: Append hero-slider CSS to `assets/css/pages.css`**
+
+```css
+/* ---- Hero slider ---- */
+.hero-slider {
+  position: relative;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  aspect-ratio: 3 / 2;
+}
+
+.hero-slider__track {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-slider__slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.hero-slider__slide.is-active {
+  opacity: 1;
+}
+
+.hero-slider__slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.hero-slider__dots {
+  position: absolute;
+  left: 50%;
+  bottom: var(--space-4);
+  transform: translateX(-50%);
+  display: flex;
+  gap: var(--space-2);
+  z-index: 2;
+}
+
+.hero-slider__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: rgba(255, 255, 255, 0.4);
+  padding: 0;
+  cursor: pointer;
+}
+
+.hero-slider__dot.is-active {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-slider__slide { transition: none; }
+}
+```
+
+- [ ] **Step 3: Append slider behavior to `assets/js/main.js`**
+
+```js
+/* ---- Hero slider ---- */
+(function () {
+  var root = document.querySelector('[data-hero-slider]');
+  if (!root) return;
+
+  var slides = Array.prototype.slice.call(root.querySelectorAll('.hero-slider__slide'));
+  var dots = Array.prototype.slice.call(root.querySelectorAll('.hero-slider__dot'));
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var current = 0;
+  var timer = null;
+
+  function goTo(index) {
+    slides[current].classList.remove('is-active');
+    dots[current].classList.remove('is-active');
+    dots[current].setAttribute('aria-selected', 'false');
+
+    current = (index + slides.length) % slides.length;
+
+    slides[current].classList.add('is-active');
+    dots[current].classList.add('is-active');
+    dots[current].setAttribute('aria-selected', 'true');
+  }
+
+  function start() {
+    if (reduceMotion || slides.length < 2) return;
+    stop();
+    timer = window.setInterval(function () { goTo(current + 1); }, 5000);
+  }
+
+  function stop() {
+    if (timer) { window.clearInterval(timer); timer = null; }
+  }
+
+  dots.forEach(function (dot, index) {
+    dot.addEventListener('click', function () {
+      goTo(index);
+      start();
+    });
+  });
+
+  root.addEventListener('mouseenter', stop);
+  root.addEventListener('mouseleave', start);
+  root.addEventListener('focusin', stop);
+  root.addEventListener('focusout', start);
+
+  start();
+})();
+```
+
+- [ ] **Step 4: Verify**
+
+Run: `node --check plutobv-website/assets/js/main.js`
+Expected: no syntax errors.
+
+Open `index.html` in the browser at 375px, 768px, and 1280px: confirm the
+slider crossfades between slides roughly every 5 seconds, clicking a dot jumps
+to that slide and resets the timer, hovering/focusing inside the slider pauses
+auto-advance and leaving resumes it, and with the OS/browser "reduce motion"
+setting enabled the slider does not auto-advance (dots still work manually).
+Broken image icons for all 3 slides are expected (Task 6 still deferred) —
+verify the slider mechanism and layout, not the images themselves.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add index.html assets/css/pages.css assets/js/main.js
+git commit -m "feat: add hero image slider"
+```
+
