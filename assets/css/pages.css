@@ -161,3 +161,8 @@
 }
 
 .article img { width: 100%; height: auto; }
+
+/* ---- Legal & status pages ---- */
+.legal h2 { margin-top: var(--space-6); }
+.legal h2:first-child { margin-top: 0; }
+.status-page { padding-block: var(--space-9); }
