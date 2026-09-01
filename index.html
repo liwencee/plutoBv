@@ -9,9 +9,9 @@
   <!-- LCP element on this page. type= means browsers without WebP skip it
        and fetch the JPEG through the normal <picture> path instead. -->
   <link rel="preload" as="image" href="/assets/images/hero-team.webp" type="image/webp" fetchpriority="high">
-  <link rel="stylesheet" href="/assets/css/base.css?v=20260901c">
-  <link rel="stylesheet" href="/assets/css/components.css?v=20260901c">
-  <link rel="stylesheet" href="/assets/css/pages.css?v=20260901c">
+  <link rel="stylesheet" href="/assets/css/base.css?v=20260901d">
+  <link rel="stylesheet" href="/assets/css/components.css?v=20260901d">
+  <link rel="stylesheet" href="/assets/css/pages.css?v=20260901d">
 </head>
 <body>
   <!-- HEADER: shared block from Task 4, Home link marked current -->
@@ -27,7 +27,7 @@
       </div>
     </div>
     <div class="container navbar">
-      <a class="brand" href="/index.html" aria-label="Plutobv home">
+      <a class="brand" href="/" aria-label="Plutobv home">
         <svg class="brand__mark" viewBox="0 0 64 64" width="44" height="44" role="img" aria-hidden="true" focusable="false">
           <rect width="64" height="64" rx="18" fill="var(--color-primary)"></rect>
           <circle cx="50" cy="14" r="6" fill="var(--color-accent)"></circle>
@@ -44,21 +44,21 @@
       </button>
       <nav id="primary-nav" class="primary-nav" aria-label="Primary">
         <ul>
-          <li><a href="/index.html" aria-current="page">Home</a></li>
-          <li><a href="/about.html">About Us</a></li>
-          <li><a href="/areas-we-support.html">Areas We Support</a></li>
-          <li><a href="/staffing-solutions.html">Staffing Solutions</a></li>
+          <li><a href="/" aria-current="page">Home</a></li>
+          <li><a href="/about">About Us</a></li>
+          <li><a href="/areas-we-support">Areas We Support</a></li>
+          <li><a href="/staffing-solutions">Staffing Solutions</a></li>
           <li class="has-submenu">
-            <a href="/services.html">Services</a>
+            <a href="/services">Services</a>
             <ul class="submenu">
-              <li><a href="/services/live-in-care.html">Live-in Care</a></li>
-              <li><a href="/services/domiciliary-care.html">Domiciliary Care</a></li>
-              <li><a href="/services/companionship-care.html">Companionship Care</a></li>
-              <li><a href="/services/autism-support.html">Autism Support</a></li>
+              <li><a href="/services/live-in-care">Live-in Care</a></li>
+              <li><a href="/services/domiciliary-care">Domiciliary Care</a></li>
+              <li><a href="/services/companionship-care">Companionship Care</a></li>
+              <li><a href="/services/autism-support">Autism Support</a></li>
             </ul>
           </li>
-          <li><a href="/news.html">News</a></li>
-          <li><a href="/contact.html" class="btn btn--primary btn--sm">Contact Us</a></li>
+          <li><a href="/news">News</a></li>
+          <li><a href="/contact" class="btn btn--primary btn--sm">Contact Us</a></li>
         </ul>
       </nav>
     </div>
@@ -78,8 +78,8 @@
             show up ready to care.
           </p>
           <div class="hero__actions">
-            <a class="btn btn--primary btn--lg" href="/contact.html">Contact Us</a>
-            <a class="btn btn--dark-outline btn--lg" href="/services.html">Our Services</a>
+            <a class="btn btn--primary btn--lg" href="/contact">Contact Us</a>
+            <a class="btn btn--dark-outline btn--lg" href="/services">Our Services</a>
           </div>
         </div>
         <div class="hero__media">
@@ -146,19 +146,19 @@
           <h2>Care staffing across every setting</h2>
         </div>
         <div class="card-grid card-grid--4">
-          <a class="service-card" href="/services/live-in-care.html">
+          <a class="service-card" href="/services/live-in-care">
             <h3>Live-in Care</h3>
             <p class="text-muted">Round-the-clock support in the comfort of your own home, so you can keep living life on your terms.</p>
           </a>
-          <a class="service-card" href="/services/domiciliary-care.html">
+          <a class="service-card" href="/services/domiciliary-care">
             <h3>Domiciliary Care</h3>
             <p class="text-muted">Visiting support with daily tasks and personal care, helping people stay independent in their own homes.</p>
           </a>
-          <a class="service-card" href="/services/companionship-care.html">
+          <a class="service-card" href="/services/companionship-care">
             <h3>Companionship Care</h3>
             <p class="text-muted">Regular company and conversation for people who'd otherwise spend long stretches of time alone.</p>
           </a>
-          <a class="service-card" href="/services/autism-support.html">
+          <a class="service-card" href="/services/autism-support">
             <h3>Autism Support</h3>
             <p class="text-muted">Support workers experienced with Autism Spectrum Disorders, complex needs, and behaviours that challenge.</p>
           </a>
@@ -256,7 +256,7 @@
             <div class="news-card__body">
               <span class="news-card__date">30 Aug 2026</span>
               <h3 class="news-card__title">What Live-in Care Really Looks Like Day to Day</h3>
-              <a class="news-card__link" href="/news/live-in-care-day-to-day.html">Read More</a>
+              <a class="news-card__link" href="/news/live-in-care-day-to-day">Read More</a>
             </div>
           </article>
           <article class="news-card">
@@ -267,7 +267,7 @@
             <div class="news-card__body">
               <span class="news-card__date">20 Aug 2026</span>
               <h3 class="news-card__title">Domiciliary Care: Support That Fits Around Your Life</h3>
-              <a class="news-card__link" href="/news/domiciliary-care-fits-your-life.html">Read More</a>
+              <a class="news-card__link" href="/news/domiciliary-care-fits-your-life">Read More</a>
             </div>
           </article>
           <article class="news-card">
@@ -278,12 +278,12 @@
             <div class="news-card__body">
               <span class="news-card__date">5 Aug 2026</span>
               <h3 class="news-card__title">Why Companionship Care Matters More Than We Think</h3>
-              <a class="news-card__link" href="/news/why-companionship-care-matters.html">Read More</a>
+              <a class="news-card__link" href="/news/why-companionship-care-matters">Read More</a>
             </div>
           </article>
         </div>
         <p style="text-align:center; margin-top: var(--space-6);">
-          <a class="btn btn--dark-outline" href="/news.html">View All News</a>
+          <a class="btn btn--dark-outline" href="/news">View All News</a>
         </p>
       </div>
     </section>
@@ -293,8 +293,8 @@
       <div class="container cta-band__inner">
         <h2>Need reliable care staff, or looking for care work?</h2>
         <div class="hero__actions">
-          <a class="btn btn--primary btn--lg" href="/contact.html">Contact Us</a>
-          <a class="btn btn--outline btn--lg" href="/apply.html">Apply Now</a>
+          <a class="btn btn--primary btn--lg" href="/contact">Contact Us</a>
+          <a class="btn btn--outline btn--lg" href="/apply">Apply Now</a>
         </div>
       </div>
     </section>
@@ -314,21 +314,21 @@
       <div class="footer__col">
         <h2>Quick Links</h2>
         <ul>
-          <li><a href="/about.html">About Us</a></li>
-          <li><a href="/services.html">Services</a></li>
-          <li><a href="/staffing-solutions.html">Staffing Solutions</a></li>
-          <li><a href="/news.html">News</a></li>
-          <li><a href="/contact.html">Contact Us</a></li>
+          <li><a href="/about">About Us</a></li>
+          <li><a href="/services">Services</a></li>
+          <li><a href="/staffing-solutions">Staffing Solutions</a></li>
+          <li><a href="/news">News</a></li>
+          <li><a href="/contact">Contact Us</a></li>
         </ul>
       </div>
       <div class="footer__col">
         <h2>Work With Us</h2>
         <ul>
-          <li><a href="/apply.html">Apply Now</a></li>
-          <li><a href="/forms/application-form-print.html">Print Application Form</a></li>
-          <li><a href="/forms/reference-form-print.html">Print Reference Form</a></li>
-          <li><a href="/timesheet.html">Submit Timesheet</a></li>
-          <li><a href="/forms/timesheet-print.html">Print Timesheet</a></li>
+          <li><a href="/apply">Apply Now</a></li>
+          <li><a href="/forms/application-form-print">Print Application Form</a></li>
+          <li><a href="/forms/reference-form-print">Print Reference Form</a></li>
+          <li><a href="/timesheet">Submit Timesheet</a></li>
+          <li><a href="/forms/timesheet-print">Print Timesheet</a></li>
         </ul>
       </div>
       <div class="footer__col">
@@ -343,12 +343,12 @@
     <div class="container footer__bottom">
       <p>&copy; <span id="year"></span> Plutobv. All rights reserved.</p>
       <ul class="footer__legal">
-        <li><a href="/privacy-policy.html">Privacy Policy</a></li>
-        <li><a href="/terms.html">Terms</a></li>
+        <li><a href="/privacy-policy">Privacy Policy</a></li>
+        <li><a href="/terms">Terms</a></li>
       </ul>
     </div>
   </footer>
 
-  <script src="/assets/js/main.js?v=20260901c"></script>
+  <script src="/assets/js/main.js?v=20260901d"></script>
 </body>
 </html>

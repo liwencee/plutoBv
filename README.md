@@ -14,15 +14,50 @@ so a root-relative path resolves to the root of your entire hard drive —
 nothing loads, and the page renders as unstyled text. This is expected
 `file://` behavior, not a bug in the site.
 
-Serve the folder with any static file server instead, for example:
+Use the included preview server:
 
 ```bash
-python -m http.server 8000 --directory plutobv-website
+python scripts/serve.py
 ```
 
-then open `http://localhost:8000/`. The PHP backend under `backend/` needs a
-PHP-capable server (see Deployment below) — it won't run from a plain static
-file server, but every page's HTML/CSS/JS renders correctly this way.
+then open `http://localhost:8421/`.
+
+Use this rather than a plain `python -m http.server`. The site uses
+extensionless URLs (`/about`, not `/about.html`), which the live server
+handles through rewrite rules in `.htaccess`. A plain static server knows
+nothing about those rules, so every internal link would 404. `serve.py`
+applies the same resolution order, so local matches live.
+
+The PHP backend under `backend/` still needs a PHP-capable server (see
+Deployment below), so submitting a form locally will fail at the network
+request. That is expected; every page's HTML, CSS and JS renders correctly.
+
+## URLs
+
+Pages are served without the `.html` extension:
+
+| Address | File on disk |
+|---|---|
+| `/` | `index.html` |
+| `/about` | `about.html` |
+| `/services` | `services.html` |
+| `/services/companionship-care` | `services/companionship-care.html` |
+
+Requests for the old `.html` address are 301-redirected to the clean one, so
+any link already shared keeps working and search engines see a single
+canonical URL per page.
+
+Two details worth knowing if you edit the rewrite rules:
+
+- `DirectorySlash Off` is required. `services` is both `services.html` and a
+  `services/` directory; without it, Apache redirects `/services` to
+  `/services/` before the rule that would serve `services.html` ever runs.
+- The redirect matches on `THE_REQUEST` (the original request line) rather
+  than the current URI. That is what stops it looping, since the internal
+  rewrite never alters `THE_REQUEST`.
+
+When adding a page, link to it without the extension (`href="/new-page"`).
+`node scripts/check-links.js` understands this and will still catch typos.
 
 ## Placeholders to replace before going live
 

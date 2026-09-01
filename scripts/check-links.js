@@ -18,6 +18,20 @@ walk(root);
 const linkPattern = /(?:href|src|action)="(\/[^"]*)"/g;
 let brokenCount = 0;
 
+// Internal links are extensionless (/about, not /about.html); the .htaccess
+// serves page.html for /page. Mirror that resolution order here, or every
+// link on the site would look broken to this checker.
+function resolves(link) {
+  const candidates =
+    link === '/' ? ['index.html']
+                 : [link.slice(1), link.slice(1) + '.html',
+                    path.posix.join(link.slice(1), 'index.html')];
+  return candidates.some(c => {
+    const p = path.join(root, c);
+    return fs.existsSync(p) && fs.statSync(p).isFile();
+  });
+}
+
 // <source srcset> inside <picture>. Worth checking separately: a broken
 // WebP path here does not show up as a visibly broken image, because the
 // browser quietly falls back to the JPEG. It would just silently ship the
@@ -30,8 +44,7 @@ for (const file of htmlFiles) {
   while ((match = linkPattern.exec(content))) {
     const link = match[1].split('#')[0].split('?')[0];
     if (link === '' || link.startsWith('/backend/')) continue; // PHP endpoints, tested separately
-    const targetPath = path.join(root, link);
-    if (!fs.existsSync(targetPath)) {
+    if (!resolves(link)) {
       console.log(`BROKEN: ${path.relative(root, file)} -> ${link}`);
       brokenCount++;
     }

@@ -8,7 +8,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     exit;
 }
 
-$redirectUrl = '/thank-you.html';
+$redirectUrl = '/thank-you';
 
 if (is_honeypot_triggered($_POST)) {
     respond(true, "Thanks — we've received your timesheet.", $redirectUrl);

@@ -8,6 +8,36 @@ ErrorDocument 404 /404.html
 
   RewriteCond %{HTTP_HOST} ^www\.plutobv\.co\.uk$ [NC]
   RewriteRule ^ https://plutobv.co.uk%{REQUEST_URI} [L,R=301]
+
+  # ---- Extensionless URLs ----
+  # /services/companionship-care  instead of
+  # /services/companionship-care.html
+
+  # 1. Send /page.html to /page, and /index.html to /, once and permanently,
+  #    so there is a single canonical address per page rather than two that
+  #    serve identical content. Matching on THE_REQUEST (the original request
+  #    line) rather than the current URI is what keeps this from looping:
+  #    the internal rewrite in step 3 never rewrites THE_REQUEST.
+  RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
+  RewriteRule ^ / [R=301,L]
+
+  RewriteCond %{THE_REQUEST} \s/+(.+?)/?index\.html[\s?] [NC]
+  RewriteRule ^ /%1/ [R=301,L]
+
+  RewriteCond %{THE_REQUEST} \s/+(.+?)\.html[\s?] [NC]
+  RewriteRule ^ /%1 [R=301,L]
+
+  # 2. "services" is both services.html and a services/ directory. Without
+  #    this, mod_dir would bounce /services to /services/ before the rule
+  #    below ever gets to serve services.html.
+  DirectorySlash Off
+
+  # 3. Serve /page from page.html when that file exists. Anything with no
+  #    matching .html (assets, the PHP endpoints, genuinely missing pages)
+  #    falls through untouched to the normal 404.
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+  RewriteRule ^(.+?)/?$ /$1.html [L]
 </IfModule>
 
 <IfModule mod_headers.c>
