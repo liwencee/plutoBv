@@ -79,10 +79,17 @@
 }
 
 /* ---- Nav toggle (mobile) ---- */
+/* 44x44 minimum. The visible bars stay 24px wide; the button around them is
+   padded out to a full touch target, since this is the primary navigation
+   control on a phone and it was previously only 40x18. */
 .nav-toggle {
   display: none;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 5px;
+  min-width: 44px;
+  min-height: 44px;
   background: none;
   border: 0;
   border-radius: var(--radius-sm);
@@ -222,14 +229,18 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
   background: none;
   border: 0;
   padding: var(--space-1);
-  margin-left: calc(var(--space-1) * -1);
+  margin-left: calc(var(--space-2) * -1);
   cursor: pointer;
   color: var(--color-text-muted);
   border-radius: var(--radius-sm);
 }
+
+.submenu-toggle:hover { color: var(--color-heading); }
 
 .submenu-toggle svg { transition: transform 0.2s var(--ease-out); }
 .has-submenu.is-open .submenu-toggle svg { transform: rotate(180deg); }
@@ -641,8 +652,36 @@
 
 .footer__legal { display: flex; gap: var(--space-5); }
 
+/* ---- Touch targets ----
+   Below 900px the site is on a phone or tablet, where an 18px-tall link is
+   genuinely hard to hit. These rules raise every tappable item to the 44px
+   guideline. Applied at the breakpoint rather than globally so the desktop
+   footer and topbar stay visually compact for mouse users. */
 @media (max-width: 900px) {
   .footer__grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-6); }
+
+  .footer__col ul { gap: 0; }
+
+  /* width:100% so the whole row is tappable, not just the width of the
+     text. "Terms" is a 38px-wide word; the row it sits in is not. */
+  .footer__col li,
+  .footer__col li a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    width: 100%;
+  }
+
+  .footer__legal { gap: var(--space-4); }
+  .footer__legal a { display: flex; align-items: center; min-height: 44px; }
+
+  .topbar__contact { gap: var(--space-3) var(--space-5); }
+  .topbar__contact li,
+  .topbar__contact a { display: flex; align-items: center; min-height: 44px; }
+
+  .news-card__link { min-height: 44px; display: flex; align-items: center; }
+
+  .btn--sm { padding: var(--space-3) var(--space-4); }
 }
 
 @media (max-width: 560px) {

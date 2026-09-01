@@ -377,28 +377,33 @@
 .hero-slider__dots {
   position: absolute;
   left: 50%;
-  bottom: var(--space-4);
+  bottom: 0;
   transform: translateX(-50%);
   display: flex;
   gap: var(--space-2);
   z-index: 2;
 }
 
+/* The visible bar is 4px tall, but a 4px tap target is unusable on a phone.
+   The button is 44px tall with 20px of vertical padding, and
+   background-clip: content-box keeps the paint confined to the 4px content
+   box, so the hit area grows without the bar getting thicker. */
 .hero-slider__dot {
   width: 28px;
-  height: 4px;
+  height: 44px;
+  padding-block: 20px;
+  background-clip: content-box;
   border-radius: var(--radius-pill);
   border: 0;
-  background: rgba(255, 255, 255, 0.45);
-  padding: 0;
+  background-color: rgba(255, 255, 255, 0.45);
   cursor: pointer;
-  transition: background 0.25s var(--ease-out), width 0.25s var(--ease-out);
+  transition: background-color 0.25s var(--ease-out), width 0.25s var(--ease-out);
 }
 
-.hero-slider__dot:hover { background: rgba(255, 255, 255, 0.7); }
+.hero-slider__dot:hover { background-color: rgba(255, 255, 255, 0.75); }
 
 .hero-slider__dot.is-active {
-  background: #fff;
+  background-color: #fff;
   width: 44px;
 }
 

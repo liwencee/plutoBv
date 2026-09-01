@@ -278,9 +278,13 @@ textarea:focus-visible, select:focus-visible {
   position: absolute;
   left: var(--space-3);
   top: -100px;
+  display: flex;
+  align-items: center;
+  min-height: 44px;
   background: var(--color-primary);
   color: #fff;
-  padding: var(--space-2) var(--space-4);
+  font-weight: 600;
+  padding: var(--space-2) var(--space-5);
   border-radius: var(--radius-sm);
   z-index: 1000;
   transition: top 0.2s var(--ease-out);
