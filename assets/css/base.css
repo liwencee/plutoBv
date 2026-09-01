@@ -191,6 +191,9 @@ h1, h2, h3, h4 {
   line-height: 1.12;
   color: var(--color-heading);
   text-wrap: balance;
+  /* Safety net: a long single word in a narrow column wraps rather than
+     spilling out of its container. */
+  overflow-wrap: break-word;
 }
 
 /* Display sizes carry tighter tracking; small headings stay at normal

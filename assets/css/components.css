@@ -441,8 +441,22 @@
 .service-card:hover::before,
 .service-card:focus-visible::before { transform: scaleX(1); }
 
-.service-card h3 { transition: color 0.2s var(--ease-out); }
-.service-card:hover h3 { color: var(--color-accent); }
+/* Card titles are sized by their role, not by their heading level. On
+   /services these are h2 (they sit directly under the page h1, so that is
+   the correct hierarchy) and would otherwise inherit the 40px display size
+   into a 200px card - "Companionship Care" overflowed its card by 95px.
+   Semantic level and visual size are separate concerns. */
+.service-card :is(h2, h3, h4) {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+  transition: color 0.2s var(--ease-out);
+}
+
+.service-card:hover :is(h2, h3, h4) { color: var(--color-accent); }
+
+.testimonial-card :is(h2, h3, h4) { font-size: 1.15rem; line-height: 1.3; }
 
 .service-card__icon {
   width: 44px;
