@@ -47,7 +47,7 @@ $body = "New job application from plutobv.co.uk\n\n"
     . "Message:\n{$message}\n";
 
 $sent = send_notification_email(
-    'info@plutobv.co.uk',
+    'admin@plutobv.co.uk',
     "Job application: {$position} — {$name}",
     $body,
     $email,
@@ -55,7 +55,7 @@ $sent = send_notification_email(
 );
 
 if (!$sent) {
-    respond(false, 'Something went wrong sending your application. Please email info@plutobv.co.uk directly.', $redirectUrl, 502);
+    respond(false, 'Something went wrong sending your application. Please email admin@plutobv.co.uk directly.', $redirectUrl, 502);
 }
 
 respond(true, "Thanks — we've received your application. We'll be in touch soon.", $redirectUrl);

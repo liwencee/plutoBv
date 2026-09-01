@@ -45,15 +45,15 @@ $body = "New timesheet submission from plutobv.co.uk\n\n"
     . "Notes:\n" . ($notes !== '' ? $notes : '(none)') . "\n";
 
 $sent = send_notification_email(
-    'info@plutobv.co.uk',
+    'admin@plutobv.co.uk',
     "Timesheet: {$name} — week ending {$weekEnding}",
     $body,
-    'info@plutobv.co.uk',
+    'admin@plutobv.co.uk',
     $_FILES['timesheet']
 );
 
 if (!$sent) {
-    respond(false, 'Something went wrong sending your timesheet. Please email info@plutobv.co.uk directly.', $redirectUrl, 502);
+    respond(false, 'Something went wrong sending your timesheet. Please email admin@plutobv.co.uk directly.', $redirectUrl, 502);
 }
 
 respond(true, "Thanks — we've received your timesheet.", $redirectUrl);

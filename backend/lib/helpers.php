@@ -154,7 +154,7 @@ function send_notification_email(string $to, string $subject, string $textBody, 
 {
     [$contentType, $body] = build_mime_email($textBody, $attachment);
 
-    $headers = "From: Plutobv Website <info@plutobv.co.uk>\r\n"
+    $headers = "From: Plutobv Website <admin@plutobv.co.uk>\r\n"
         . 'Reply-To: ' . strip_header_injection($replyTo) . "\r\n"
         . "MIME-Version: 1.0\r\n"
         . "Content-Type: {$contentType}\r\n";

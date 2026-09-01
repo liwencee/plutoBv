@@ -34,10 +34,10 @@ $body = "New contact form submission from plutobv.co.uk\n\n"
     . "Subject: {$subject}\n\n"
     . "Message:\n{$message}\n";
 
-$sent = send_notification_email('info@plutobv.co.uk', "Contact form: {$subject}", $body, $email);
+$sent = send_notification_email('admin@plutobv.co.uk', "Contact form: {$subject}", $body, $email);
 
 if (!$sent) {
-    respond(false, 'Something went wrong sending your message. Please email info@plutobv.co.uk directly.', $redirectUrl, 502);
+    respond(false, 'Something went wrong sending your message. Please email admin@plutobv.co.uk directly.', $redirectUrl, 502);
 }
 
 respond(true, "Thanks — we've received your message. We'll be in touch soon.", $redirectUrl);

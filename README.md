@@ -40,21 +40,29 @@ Pages are served without the `.html` extension:
 |---|---|
 | `/` | `index.html` |
 | `/about` | `about.html` |
-| `/services` | `services.html` |
+| `/services` | `services/index.html` |
 | `/services/companionship-care` | `services/companionship-care.html` |
+| `/news` | `news/index.html` |
+| `/news/wellbeing-in-home-care` | `news/wellbeing-in-home-care.html` |
 
 Requests for the old `.html` address are 301-redirected to the clean one, so
 any link already shared keeps working and search engines see a single
 canonical URL per page.
 
-Two details worth knowing if you edit the rewrite rules:
+Three details worth knowing if you edit the rewrite rules:
 
-- `DirectorySlash Off` is required. `services` is both `services.html` and a
-  `services/` directory; without it, Apache redirects `/services` to
-  `/services/` before the rule that would serve `services.html` ever runs.
-- The redirect matches on `THE_REQUEST` (the original request line) rather
-  than the current URI. That is what stops it looping, since the internal
-  rewrite never alters `THE_REQUEST`.
+- **A section landing page must live at `section/index.html`, never at
+  `section.html` beside a `section/` directory.** When both existed,
+  Apache's `mod_dir` appended a trailing slash to `/services` before the
+  rewrite could serve `services.html`, and the page 404'd on the live site.
+  Both the services and news overviews were moved into their directories
+  for exactly this reason.
+- The `.html` to clean-URL redirect matches on `THE_REQUEST` (the original
+  request line) rather than the current URI. That is what stops it looping,
+  since the internal rewrite never alters `THE_REQUEST`.
+- The rewrite tests `%{REQUEST_FILENAME}.html`, not
+  `%{DOCUMENT_ROOT}/$1.html`. The `DOCUMENT_ROOT` form does not resolve
+  under LiteSpeed, which is what Hostinger runs, and fails silently.
 
 When adding a page, link to it without the extension (`href="/new-page"`).
 `node scripts/check-links.js` understands this and will still catch typos.
@@ -137,7 +145,7 @@ stop and fix that before sharing the site.
    account in hPanel → Domains, and that a free SSL certificate is issued and
    active under hPanel → SSL (Hostinger issues these automatically for
    domains pointed at it, usually within a few minutes to hours).
-5. Photography is in place. All 12 images referenced by the site exist under
+5. Photography is in place. All 15 images referenced by the site exist under
    `assets/images/`, resized and compressed for the web (1600px wide for
    heroes, 1200px for cards; roughly 1.4MB for the whole set). The
    full-resolution originals live in `images/` at the project root, which is
@@ -165,7 +173,7 @@ stop and fix that before sharing the site.
      confirm it returns a 403, not the file's contents.
    - Submit each of the three forms (contact, apply with a small test PDF,
      timesheet with a small test image) for real, and confirm the email
-     arrives at `info@plutobv.co.uk`. If it doesn't arrive within a few
+     arrives at `admin@plutobv.co.uk`. If it doesn't arrive within a few
      minutes, check hPanel's mail logs — Hostinger shared hosting supports
      PHP's `mail()` out of the box, but some setups deliver more reliably
      through SMTP.
