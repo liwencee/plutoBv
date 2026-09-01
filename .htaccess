@@ -21,6 +21,48 @@ ErrorDocument 404 /404.html
 
 Options -Indexes
 
+AddDefaultCharset utf-8
+
+# ---- Compression ----
+# Text compresses by roughly 70%. Images and fonts are already compressed
+# (JPEG, WebP, woff2), so re-compressing them only burns CPU.
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
+  AddOutputFilterByType DEFLATE application/javascript application/x-javascript
+  AddOutputFilterByType DEFLATE application/json application/xml
+  AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# ---- Browser caching ----
+# HTML is deliberately not cached, so content edits appear on the next visit
+# rather than whenever a stale copy happens to expire.
+#
+# CSS and JS are requested with a ?v= query string that changes when they do,
+# so a month is safe. Photos get a month as well: swapping one reuses the
+# same filename (see README), and a year-long cache would leave visitors
+# looking at the old picture. The font is versioned in its filename and
+# never changes in place, so it gets a year.
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault                          "access plus 1 month"
+  ExpiresByType text/html                 "access plus 0 seconds"
+  ExpiresByType text/css                  "access plus 1 month"
+  ExpiresByType application/javascript    "access plus 1 month"
+  ExpiresByType image/jpeg                "access plus 1 month"
+  ExpiresByType image/webp                "access plus 1 month"
+  ExpiresByType image/svg+xml             "access plus 1 month"
+  ExpiresByType font/woff2                "access plus 1 year"
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html|php)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+  <FilesMatch "\.woff2$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>
+
 # ---- Repository files must never be served ----
 # Deploying by FTP means hand-picking which folders to upload. Deploying by
 # Git means the WHOLE repository lands in public_html, including .git, the
