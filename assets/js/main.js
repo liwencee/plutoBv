@@ -8,16 +8,95 @@
       var expanded = toggle.getAttribute('aria-expanded') === 'true';
       toggle.setAttribute('aria-expanded', String(!expanded));
       nav.classList.toggle('is-open', !expanded);
-    });
-
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && nav.classList.contains('is-open')) {
-        nav.classList.remove('is-open');
-        toggle.setAttribute('aria-expanded', 'false');
-        toggle.focus();
-      }
+      if (expanded) closeAllSubmenus();
     });
   }
+
+  /* ---- Submenus ----
+     The submenu used to open on :hover alone, which fails two ways: on a
+     touchscreen there is no hover, so tapping "Services" just navigated away
+     and the panel could stick open afterwards; and a stray hover state could
+     leave it hanging over the page. Each submenu parent gets a real caret
+     button instead. The button is injected here rather than written into all
+     25 pages' markup, and only appears when JS is running -- with JS off, the
+     "Services" link still navigates to the services overview page, which
+     lists the same four links. */
+  var submenuParents = Array.prototype.slice.call(
+    document.querySelectorAll('.has-submenu')
+  );
+
+  var CARET =
+    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" ' +
+    'stroke="currentColor" stroke-width="2.5" stroke-linecap="round" ' +
+    'stroke-linejoin="round" aria-hidden="true">' +
+    '<polyline points="6 9 12 15 18 9"></polyline></svg>';
+
+  function closeAllSubmenus(except) {
+    submenuParents.forEach(function (parent) {
+      if (parent === except) return;
+      parent.classList.remove('is-open');
+      var btn = parent.querySelector('.submenu-toggle');
+      if (btn) btn.setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  submenuParents.forEach(function (parent, index) {
+    var link = parent.querySelector(':scope > a');
+    var panel = parent.querySelector(':scope > .submenu');
+    if (!link || !panel) return;
+
+    if (!panel.id) panel.id = 'submenu-' + (index + 1);
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'submenu-toggle';
+    btn.setAttribute('aria-expanded', 'false');
+    btn.setAttribute('aria-controls', panel.id);
+    btn.innerHTML =
+      '<span class="visually-hidden">Show ' + link.textContent.trim() +
+      ' submenu</span>' + CARET;
+
+    /* On mobile the link and its caret sit on one row so the caret can be
+       tapped without triggering the link. */
+    var row = document.createElement('div');
+    row.className = 'has-submenu__row';
+    parent.insertBefore(row, link);
+    row.appendChild(link);
+    row.appendChild(btn);
+
+    btn.addEventListener('click', function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      var isOpen = parent.classList.contains('is-open');
+      closeAllSubmenus(parent);
+      parent.classList.toggle('is-open', !isOpen);
+      btn.setAttribute('aria-expanded', String(!isOpen));
+    });
+  });
+
+  /* Clicking anywhere outside an open submenu closes it. This is what stops
+     a panel hanging over the page after the pointer has moved away. */
+  document.addEventListener('click', function (event) {
+    if (!event.target.closest('.has-submenu')) closeAllSubmenus();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+
+    var openSubmenu = document.querySelector('.has-submenu.is-open');
+    if (openSubmenu) {
+      closeAllSubmenus();
+      var btn = openSubmenu.querySelector('.submenu-toggle');
+      if (btn) btn.focus();
+      return;
+    }
+
+    if (nav && nav.classList.contains('is-open')) {
+      nav.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.focus();
+    }
+  });
 
   var yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();

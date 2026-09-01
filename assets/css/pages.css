@@ -1,52 +1,125 @@
 /* ---- Hero ---- */
 /* No padding-block here: the wrapping <section class="section"> (or
    "about-hero", which sets the same value) already supplies vertical
-   section padding. Adding it again here was doubling the hero's top/bottom
-   whitespace to 128px versus every other section's 64px. */
+   section padding. */
+.hero {
+  position: relative;
+  overflow: hidden;
+  /* Own stacking context, so the ambient wash below can sit at z-index 0
+     behind the content without falling behind the page background. */
+  isolation: isolate;
+}
+
+/* Ambient brand-tinted wash behind the hero. Two soft radial pools in the
+   navy and teal already in the palette, at low opacity, so the top of the
+   page has depth without reading as a generic gradient blob. */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: -30% -10% auto -10%;
+  height: 130%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(46% 52% at 78% 18%,
+      color-mix(in srgb, var(--color-accent) 15%, transparent), transparent 70%),
+    radial-gradient(52% 58% at 12% 4%,
+      color-mix(in srgb, var(--color-primary) 13%, transparent), transparent 72%);
+}
+
 .hero__grid {
+  position: relative;
+  z-index: 1;
   display: grid;
-  grid-template-columns: 1.1fr 1fr;
+  grid-template-columns: 1.05fr 1fr;
   gap: var(--space-8);
   align-items: center;
 }
 
-.hero__content { display: flex; flex-direction: column; gap: var(--space-4); align-items: flex-start; }
-.hero__actions { display: flex; gap: var(--space-4); flex-wrap: wrap; margin-top: var(--space-3); }
-.hero__media img { border-radius: var(--radius-lg); box-shadow: var(--shadow-md); width: 100%; height: auto; }
+.hero__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  align-items: flex-start;
+}
+
+.hero__content > p {
+  font-size: clamp(1.02rem, 0.97rem + 0.35vw, 1.16rem);
+  color: var(--color-text-muted);
+  max-width: 54ch;
+}
+
+.hero__actions {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-top: var(--space-3);
+}
+
+.hero__media img {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  height: auto;
+}
 
 @media (max-width: 900px) {
-  .hero__grid { grid-template-columns: 1fr; }
+  .hero__grid { grid-template-columns: 1fr; gap: var(--space-6); }
   .hero__media { order: -1; }
 }
 
 /* ---- Section head ---- */
-.section-head { max-width: 640px; margin-bottom: var(--space-7); display: flex; flex-direction: column; gap: var(--space-3); }
-
-/* ---- Feature grid (How We Do It) ---- */
-.feature-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-6);
+.section-head {
+  max-width: 640px;
+  margin-bottom: var(--space-7);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  align-items: flex-start;
 }
 
-/* Matches the site's card language (surface + radius-lg + shadow-sm, as
-   used by .card/.service-card) so feature items read as content blocks
-   rather than bare, unstyled text sitting in a grid. */
+.section-head > p {
+  color: var(--color-text-muted);
+  font-size: 1.05rem;
+}
+
+/* ---- Feature grid ----
+   Deliberately not three identical columns: the first two items sit side by
+   side and the third spans the full width, giving the section an asymmetric
+   rhythm rather than the templated "three equal cards" block. */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--space-5);
+}
+
+.feature-grid > * { grid-column: span 3; }
+.feature-grid > *:nth-child(3) { grid-column: span 6; }
+
 .feature {
+  position: relative;
   background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
-  padding: var(--space-5);
+  padding: var(--space-6);
+  transition: border-color 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
+}
+
+.feature:hover {
+  border-color: color-mix(in srgb, var(--color-accent) 30%, var(--color-border));
+  box-shadow: var(--shadow-md);
 }
 
 .feature h3 { margin-bottom: var(--space-2); }
 
 @media (max-width: 760px) {
   .feature-grid { grid-template-columns: 1fr; }
+  .feature-grid > *, .feature-grid > *:nth-child(3) { grid-column: span 1; }
 }
 
 /* ---- Card grid (services / stats / news) ---- */
-.card-grid { display: grid; gap: var(--space-6); }
+.card-grid { display: grid; gap: var(--space-5); }
 .card-grid--3 { grid-template-columns: repeat(3, 1fr); }
 .card-grid--4 { grid-template-columns: repeat(4, 1fr); }
 
@@ -73,29 +146,32 @@
 .process-list {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-4) var(--space-6);
+  gap: var(--space-5) var(--space-7);
   counter-reset: process;
 }
 
 .process-list li {
   position: relative;
-  padding-left: var(--space-7);
-  color: var(--color-text);
+  padding-left: calc(var(--space-7) + var(--space-2));
+  color: var(--color-text-muted);
+  padding-block: var(--space-1);
 }
 
 .process-list li::before {
   counter-increment: process;
-  content: counter(process);
+  content: counter(process, decimal-leading-zero);
   position: absolute;
   left: 0;
   top: 0;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--color-accent);
-  color: #fff;
-  font-weight: 700;
-  font-size: 0.85rem;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-accent) 26%, transparent);
+  color: var(--color-accent);
+  font-weight: 800;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -106,13 +182,30 @@
 }
 
 /* ---- Value band ---- */
-.value-band { background: var(--color-primary-light); }
+.value-band {
+  background: var(--color-primary-light);
+  border-block: 1px solid var(--color-border);
+}
 
-/* ---- CTA band ---- */
+.value-band .stat-card {
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+}
+
+/* ---- CTA band ----
+   Uses --color-primary-dark rather than --color-primary because this band
+   must stay a dark surface in BOTH themes (its text and outline button are
+   white). --color-primary lightens in dark mode; --color-primary-dark does
+   not. */
 .cta-band {
-  background: var(--color-primary);
-  color: #fff;
-  padding-block: var(--space-8);
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(70% 130% at 88% 8%,
+      color-mix(in srgb, var(--color-accent) 34%, transparent), transparent 62%),
+    var(--color-primary-dark);
+  color: var(--color-on-dark);
+  padding-block: var(--space-9);
 }
 
 .cta-band__inner {
@@ -120,14 +213,21 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--space-5);
+  gap: var(--space-6);
 }
 
-.cta-band h2 { color: #fff; margin: 0; max-width: 520px; }
+.cta-band h2 {
+  color: var(--color-on-dark);
+  margin: 0;
+  max-width: 20ch;
+}
 
 /* ---- About page ---- */
-.about-hero { padding-block: var(--space-8); }
+.about-hero { padding-block: var(--space-9); }
+
 .value-grid.feature-grid { grid-template-columns: repeat(4, 1fr); }
+.value-grid.feature-grid > *,
+.value-grid.feature-grid > *:nth-child(3) { grid-column: span 1; }
 
 @media (max-width: 900px) {
   .value-grid.feature-grid { grid-template-columns: repeat(2, 1fr); }
@@ -141,80 +241,118 @@
 .detail-list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-4);
   max-width: 640px;
 }
 
 .detail-list li {
-  padding-left: var(--space-6);
+  padding-left: var(--space-7);
   position: relative;
+  color: var(--color-text-muted);
 }
 
+/* Check mark rather than a plain dot: these lists are "what's included",
+   so the mark carries meaning instead of being decoration. */
 .detail-list li::before {
   content: "";
   position: absolute;
   left: 0;
-  top: 0.5em;
-  width: 10px;
-  height: 10px;
+  top: 0.34em;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
-  background: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-accent) 34%, transparent);
+}
+
+.detail-list li::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 0.62em;
+  width: 5px;
+  height: 8px;
+  border-right: 2px solid var(--color-accent);
+  border-bottom: 2px solid var(--color-accent);
+  transform: rotate(42deg);
 }
 
 /* ---- Form pages ---- */
-.page-hero { padding-block: var(--space-7) var(--space-5); }
+.page-hero { padding-block: var(--space-8) var(--space-5); }
 .form-page { max-width: 640px; }
 .form-status:empty { display: none; }
 
 /* ---- Article pages ---- */
 .article {
-  max-width: 720px;
+  max-width: 68ch;
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
-  font-size: 1.05rem;
+  font-size: 1.08rem;
+  line-height: 1.72;
 }
 
 .article img { width: 100%; height: auto; }
 
+.article a:not(.btn) {
+  color: var(--color-accent);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+.article a:not(.btn):hover { text-decoration-thickness: 2px; }
+
 /* ---- Legal & status pages ---- */
-.legal h2 { margin-top: var(--space-6); }
+.legal h2 { margin-top: var(--space-7); }
 .legal h2:first-child { margin-top: 0; }
 .status-page { padding-block: var(--space-9); }
 
 /* ---- Scroll reveal ---- */
-.reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+}
+
 .reveal--visible { opacity: 1; transform: none; }
 
 @media print {
   .reveal { opacity: 1 !important; transform: none !important; }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
 /* ---- Hero slider ---- */
 .hero-slider {
   position: relative;
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
   overflow: hidden;
   aspect-ratio: 3 / 2;
+  background: var(--color-surface-2);
 }
 
 .hero-slider__track {
   position: relative;
   width: 100%;
   height: 100%;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .hero-slider__slide {
   position: absolute;
   inset: 0;
   opacity: 0;
-  transition: opacity 0.8s ease;
+  transition: opacity 0.9s var(--ease-out);
 }
 
-.hero-slider__slide.is-active {
-  opacity: 1;
-}
+.hero-slider__slide.is-active { opacity: 1; }
 
 .hero-slider__slide img {
   width: 100%;
@@ -222,6 +360,18 @@
   object-fit: cover;
   border-radius: 0;
   box-shadow: none;
+}
+
+/* Scrim so the dot controls stay legible over a bright photo. */
+.hero-slider::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 30%;
+  pointer-events: none;
+  background: linear-gradient(to top, rgba(10, 17, 25, 0.42), transparent);
 }
 
 .hero-slider__dots {
@@ -235,18 +385,21 @@
 }
 
 .hero-slider__dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  border: 2px solid #fff;
-  background: rgba(255, 255, 255, 0.4);
+  width: 28px;
+  height: 4px;
+  border-radius: var(--radius-pill);
+  border: 0;
+  background: rgba(255, 255, 255, 0.45);
   padding: 0;
   cursor: pointer;
+  transition: background 0.25s var(--ease-out), width 0.25s var(--ease-out);
 }
 
+.hero-slider__dot:hover { background: rgba(255, 255, 255, 0.7); }
+
 .hero-slider__dot.is-active {
-  background: var(--color-accent);
-  border-color: var(--color-accent);
+  background: #fff;
+  width: 44px;
 }
 
 @media (prefers-reduced-motion: reduce) {

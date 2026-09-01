@@ -26,9 +26,12 @@ file server, but every page's HTML/CSS/JS renders correctly this way.
 
 ## Placeholders to replace before going live
 
-- Business address: search for `[Your Street Address]`
-- Phone number: search for `[Your Phone Number]`
+- Coverage area: search for `[Your Coverage Area]` (on `areas-we-support.html`)
 - Testimonial quotes: search for `[Client testimonial goes here]`
+
+Address (3 Spencer Parade, Northampton NN1 5AA) and phone (07932 790842) are
+now live across the site. The phone is wired as a `tel:` link in the topbar and
+footer of every page.
 
 ## Prerequisites
 
@@ -65,21 +68,22 @@ file server, but every page's HTML/CSS/JS renders correctly this way.
    account in hPanel → Domains, and that a free SSL certificate is issued and
    active under hPanel → SSL (Hostinger issues these automatically for
    domains pointed at it, usually within a few minutes to hours).
-5. Photography is still pending. 12 image files are referenced across the
-   site but don't exist yet under `assets/images/` — generation was blocked
-   on an external credits issue during the build:
-   - `hero-team.jpg`, `hero-slide-2.jpg`, `hero-slide-3.jpg`
-   - `about-team.jpg`
-   - `staffing-solutions.jpg`
-   - `service-live-in-care.jpg`, `service-domiciliary-care.jpg`,
-     `service-companionship-care.jpg`, `service-autism-support.jpg`
-   - `news-01.jpg`, `news-02.jpg`, `news-03.jpg`
+5. Photography is in place. All 12 images referenced by the site exist under
+   `assets/images/`, resized and compressed for the web (1600px wide for
+   heroes, 1200px for cards; roughly 1.4MB for the whole set). The
+   full-resolution originals live in `images/` at the project root, which is
+   git-ignored and must NOT be uploaded - it is around 85MB of source files
+   that the site never serves.
 
-   The site is otherwise complete and functional, but these will show as
-   broken images until generated and added to `assets/images/`.
+   To swap a photo later: drop the new original into `images/`, then re-run
+   the resize step (Pillow is the only dependency) and overwrite the file of
+   the same name in `assets/images/`. Keep the filenames identical so no HTML
+   needs editing. If the new photo shows something different from the old
+   one, update that image's `alt` text too - the alt text on each page
+   describes the specific photo currently in that slot.
 6. Replace every placeholder before telling anyone the site is live:
-   - `[Your Street Address]` — search across all files
-   - `[Your Phone Number]` — search across all files
+   - `[Your Coverage Area]` on `areas-we-support.html` - replace with the
+     towns or counties you actually place staff in
    - `"[Client testimonial goes here]"` — replace with real client quotes, or
      remove the testimonial section from `index.html` if you don't have any
      yet

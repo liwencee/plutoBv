@@ -1,8 +1,9 @@
-/* ---- Topbar & header ---- */
+/* ---- Topbar ---- */
 .topbar {
   background: var(--color-primary-dark);
-  color: #fff;
-  font-size: 0.85rem;
+  color: var(--color-on-dark);
+  font-size: 0.82rem;
+  letter-spacing: 0.01em;
 }
 
 .topbar__inner { padding-block: var(--space-2); }
@@ -11,17 +12,35 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-5);
+  color: rgba(255, 255, 255, 0.82);
 }
 
-.topbar__contact a { color: #fff; }
-.topbar__contact a:hover { text-decoration: underline; }
+.topbar__contact a { color: rgba(255, 255, 255, 0.92); }
+.topbar__contact a:hover { color: #fff; text-decoration: underline; }
 
+/* ---- Header ---- */
 .site-header {
-  background: var(--color-surface);
-  box-shadow: var(--shadow-sm);
+  background: color-mix(in srgb, var(--color-surface) 82%, transparent);
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  border-bottom: 1px solid var(--color-border);
   position: sticky;
   top: 0;
   z-index: 100;
+}
+
+/* Browsers without color-mix, and viewers who have asked for reduced
+   transparency, get a solid header instead of a translucent one. */
+@supports not (background: color-mix(in srgb, red 50%, transparent)) {
+  .site-header { background: var(--color-surface); }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .site-header {
+    background: var(--color-surface);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
 }
 
 .navbar {
@@ -36,11 +55,28 @@
   display: flex;
   align-items: center;
   gap: var(--space-3);
+  transition: opacity 0.2s var(--ease-out);
 }
 
-.brand__text { display: flex; flex-direction: column; line-height: 1.2; }
-.brand__name { font-weight: 800; font-size: 1.25rem; color: var(--color-primary-dark); }
-.brand__tagline { font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-muted); }
+.brand:hover { opacity: 0.85; }
+.brand__mark { flex-shrink: 0; }
+
+.brand__text { display: flex; flex-direction: column; line-height: 1.15; }
+
+.brand__name {
+  font-weight: 800;
+  font-size: 1.3rem;
+  letter-spacing: -0.03em;
+  color: var(--color-heading);
+}
+
+.brand__tagline {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
 
 /* ---- Nav toggle (mobile) ---- */
 .nav-toggle {
@@ -52,11 +88,10 @@
   border-radius: var(--radius-sm);
   padding: var(--space-2);
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: background 0.15s var(--ease-out);
 }
 
-.nav-toggle:hover,
-.nav-toggle:focus-visible { background: var(--color-primary-light); }
+.nav-toggle:hover { background: var(--color-primary-light); }
 
 .nav-toggle__bar,
 .nav-toggle__bar::before,
@@ -66,8 +101,9 @@
   width: 24px;
   height: 2px;
   border-radius: 2px;
-  background: var(--color-primary-dark);
-  transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease;
+  background: var(--color-heading);
+  transition: transform 0.25s var(--ease-out), opacity 0.2s var(--ease-out),
+              background 0.2s var(--ease-out);
 }
 
 .nav-toggle__bar::before { transform: translateY(-7px); }
@@ -78,46 +114,130 @@
 .nav-toggle[aria-expanded="true"] .nav-toggle__bar::after { transform: translateY(0) rotate(-45deg); }
 
 /* ---- Primary nav ---- */
-.primary-nav ul {
+/* Direct child only. The submenu is itself a <ul> inside .primary-nav, and
+   the descendant form (`.primary-nav ul`, specificity 0-0-1-1) outranks
+   `.submenu` (0-0-1-0) - which meant this row's `display: flex` overrode the
+   submenu's `display: none` and left the four service links permanently
+   expanded on mobile. Scoping to `>` keeps this rule on the top-level row. */
+.primary-nav > ul {
   display: flex;
   align-items: center;
-  gap: var(--space-5);
+  gap: var(--space-2);
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
 .primary-nav a {
+  position: relative;
+  display: block;
   font-weight: 600;
+  font-size: 0.94rem;
   color: var(--color-text);
-  padding: var(--space-2) 0;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  transition: color 0.18s var(--ease-out), background 0.18s var(--ease-out);
 }
 
-.primary-nav a:hover { color: var(--color-primary); }
-.primary-nav a[aria-current="page"]:not(.btn) { color: var(--color-primary); border-bottom: 2px solid var(--color-accent); }
+.primary-nav a:not(.btn):hover {
+  color: var(--color-heading);
+  background: var(--color-primary-light);
+}
 
-.has-submenu { position: relative; }
-.submenu {
-  display: none;
+/* Active page gets a short accent underline rather than a full border, so the
+   nav row keeps an even baseline. */
+.primary-nav a[aria-current="page"]:not(.btn) { color: var(--color-accent); }
+
+.primary-nav a[aria-current="page"]:not(.btn)::after {
+  content: "";
   position: absolute;
-  top: 100%;
+  left: var(--space-3);
+  right: var(--space-3);
+  bottom: 2px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--color-accent);
+}
+
+/* ---- Submenu ----
+   Opening is driven by the .is-open class (set by main.js on click/tap), NOT
+   by :hover alone. Hover-opening is additionally gated behind a mouse-device
+   media query: on a touchscreen there is no real hover, so a hover-only
+   dropdown either never opens or sticks open after a tap. */
+.has-submenu { position: relative; }
+
+.submenu {
+  position: absolute;
+  top: calc(100% + var(--space-2));
   left: 0;
+  min-width: 232px;
   background: var(--color-surface);
-  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-lg);
   border-radius: var(--radius-md);
   padding: var(--space-2);
-  min-width: 220px;
+  list-style: none;
+  margin: 0;
+  display: flex;
   flex-direction: column;
+  gap: 2px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: opacity 0.18s var(--ease-out), transform 0.18s var(--ease-out),
+              visibility 0.18s;
+}
+
+.has-submenu.is-open > .submenu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .has-submenu:hover > .submenu,
+  .has-submenu:focus-within > .submenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+}
+
+.submenu a {
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.submenu a:hover { background: var(--color-primary-light); color: var(--color-heading); }
+
+/* Caret button injected by main.js so the Services parent link stays
+   navigable while the caret opens the submenu. */
+.submenu-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 0;
+  padding: var(--space-1);
+  margin-left: calc(var(--space-1) * -1);
+  cursor: pointer;
+  color: var(--color-text-muted);
+  border-radius: var(--radius-sm);
+}
+
+.submenu-toggle svg { transition: transform 0.2s var(--ease-out); }
+.has-submenu.is-open .submenu-toggle svg { transform: rotate(180deg); }
+
+/* The link and its caret share one row at every width. Without this the
+   injected wrapper is a block element and stacks them, making the Services
+   item taller than every other nav item. */
+.has-submenu__row {
+  display: flex;
+  align-items: center;
   gap: 0;
 }
-
-.has-submenu:hover .submenu,
-.has-submenu:focus-within .submenu {
-  display: flex;
-}
-
-.submenu a { padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); }
-.submenu a:hover { background: var(--color-primary-light); }
 
 @media (max-width: 900px) {
   .nav-toggle { display: flex; }
@@ -129,44 +249,54 @@
     left: 0;
     right: 0;
     background: var(--color-surface);
-    box-shadow: var(--shadow-md);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: var(--shadow-lg);
     padding: var(--space-3);
     max-height: calc(100vh - var(--header-height));
     overflow-y: auto;
   }
 
   .primary-nav.is-open { display: block; }
-
-  .primary-nav ul { flex-direction: column; align-items: stretch; gap: 0; }
+  .primary-nav > ul { flex-direction: column; align-items: stretch; gap: 0; }
 
   .primary-nav > ul > li:not(:last-child) { border-bottom: 1px solid var(--color-border); }
 
   .primary-nav a:not(.btn) {
-    display: block;
     padding: var(--space-4) var(--space-3);
-    border-radius: var(--radius-sm);
+    font-size: 1rem;
   }
 
   .primary-nav a[aria-current="page"]:not(.btn) {
     background: var(--color-primary-light);
-    border-bottom: none;
     border-left: 3px solid var(--color-accent);
     padding-left: calc(var(--space-3) - 3px);
   }
 
-  .has-submenu:hover .submenu, .has-submenu:focus-within .submenu { display: none; }
+  .primary-nav a[aria-current="page"]:not(.btn)::after { content: none; }
 
+  /* On mobile the submenu becomes an inline expanding block instead of a
+     floating panel. */
   .submenu {
     position: static;
     box-shadow: none;
-    display: block;
-    background: var(--color-bg);
-    padding: 0 0 var(--space-2) var(--space-4);
+    border: 0;
+    background: var(--color-surface-2);
+    border-radius: var(--radius-sm);
+    padding: var(--space-2);
+    margin: 0 0 var(--space-3) var(--space-4);
+    display: none;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
   }
 
-  .submenu a { padding: var(--space-2) var(--space-3); font-weight: 500; font-size: 0.95rem; }
+  .has-submenu.is-open > .submenu { display: flex; }
 
-  .primary-nav .btn { display: block; text-align: center; margin-top: var(--space-3); }
+  .has-submenu > a { flex: 1; }
+  .has-submenu__row { justify-content: space-between; }
+  .submenu-toggle { padding: var(--space-3); }
+
+  .primary-nav .btn { display: flex; margin-top: var(--space-3); }
 }
 
 /* ---- Buttons ---- */
@@ -176,107 +306,274 @@
   justify-content: center;
   gap: var(--space-2);
   padding: var(--space-3) var(--space-5);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-pill);
   font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
   border: 2px solid transparent;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  transition: transform 0.18s var(--ease-out), box-shadow 0.18s var(--ease-out),
+              background 0.18s var(--ease-out), border-color 0.18s var(--ease-out),
+              color 0.18s var(--ease-out);
 }
 
-.btn--primary { background: var(--color-accent); color: #fff; }
-.btn--primary:hover { background: var(--color-accent-dark); box-shadow: var(--shadow-md); }
+.btn--primary {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  box-shadow: var(--shadow-sm);
+}
 
-.btn--outline { background: transparent; border-color: var(--color-surface); color: var(--color-surface); }
-.btn--outline:hover { background: rgba(255,255,255,0.12); }
+.btn--primary:hover {
+  background: var(--color-accent-dark);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
 
-.btn--dark-outline { background: transparent; border-color: var(--color-primary); color: var(--color-primary); }
-.btn--dark-outline:hover { background: var(--color-primary-light); }
+.btn--outline {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.5);
+  color: var(--color-on-dark);
+}
+
+.btn--outline:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: var(--color-on-dark);
+  transform: translateY(-2px);
+}
+
+.btn--dark-outline {
+  background: transparent;
+  border-color: var(--color-border);
+  color: var(--color-heading);
+}
+
+.btn--dark-outline:hover {
+  background: var(--color-surface);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
 
 .btn--sm { padding: var(--space-2) var(--space-4); font-size: 0.85rem; }
-.btn--lg { padding: var(--space-4) var(--space-6); font-size: 1.05rem; }
-.btn:active { transform: translateY(1px); }
+.btn--lg { padding: var(--space-4) var(--space-6); font-size: 1.02rem; }
+.btn:active { transform: translateY(0) scale(0.985); }
 
 /* ---- Badge ---- */
 .badge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  align-self: flex-start;
   background: var(--color-primary-light);
-  color: var(--color-primary-dark);
-  font-size: 0.75rem;
+  color: var(--color-accent);
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
-  padding: var(--space-1) var(--space-3);
-  border-radius: 999px;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  border: 1px solid color-mix(in srgb, var(--color-accent) 22%, transparent);
 }
 
 /* ---- Cards ---- */
 .card {
   background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
-  padding: var(--space-5);
+  padding: var(--space-6);
 }
 
 .service-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
   background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   padding: var(--space-6);
-  border-top: 4px solid var(--color-accent);
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  overflow: hidden;
+  transition: box-shadow 0.28s var(--ease-out), transform 0.28s var(--ease-out),
+              border-color 0.28s var(--ease-out);
 }
 
-.service-card:hover { box-shadow: var(--shadow-md); transform: translateY(-4px); }
-.service-card__icon { width: 48px; height: 48px; margin-bottom: var(--space-4); color: var(--color-accent); }
+/* Accent rule that grows across the card top on hover, replacing the static
+   4px border. Communicates which card is focused without moving layout. */
+.service-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s var(--ease-out);
+}
+
+.service-card:hover,
+.service-card:focus-visible {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-5px);
+  border-color: color-mix(in srgb, var(--color-accent) 32%, var(--color-border));
+}
+
+.service-card:hover::before,
+.service-card:focus-visible::before { transform: scaleX(1); }
+
+.service-card h3 { transition: color 0.2s var(--ease-out); }
+.service-card:hover h3 { color: var(--color-accent); }
+
+.service-card__icon {
+  width: 44px;
+  height: 44px;
+  margin-bottom: var(--space-2);
+  color: var(--color-accent);
+}
 
 .testimonial-card {
+  display: flex;
+  flex-direction: column;
   background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   padding: var(--space-6);
 }
 
-.testimonial-card__quote { font-size: 1.05rem; font-style: italic; color: var(--color-text); }
-.testimonial-card__author { margin-top: var(--space-4); font-weight: 700; color: var(--color-primary-dark); }
+.testimonial-card__quote {
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--color-text);
+}
+
+.testimonial-card__author {
+  margin-top: var(--space-5);
+  font-weight: 700;
+  color: var(--color-heading);
+}
+
 .testimonial-card__role { color: var(--color-text-muted); font-size: 0.85rem; }
 
 .news-card {
   background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  transition: box-shadow 0.28s var(--ease-out), transform 0.28s var(--ease-out);
 }
 
-.news-card__image { aspect-ratio: 4 / 3; object-fit: cover; width: 100%; }
-.news-card__body { padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-2); flex: 1; }
-.news-card__date { color: var(--color-text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; }
-.news-card__title { font-size: 1.1rem; }
-.news-card__link { margin-top: auto; font-weight: 700; color: var(--color-accent-dark); }
+.news-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-4px); }
 
-.stat-card { text-align: center; }
-.stat-card__value { font-size: 2.5rem; font-weight: 800; color: var(--color-accent); }
-.stat-card__label { color: var(--color-text-muted); font-weight: 600; }
+.news-card__image {
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  width: 100%;
+  background: var(--color-surface-2);
+  transition: transform 0.5s var(--ease-out);
+}
+
+.news-card:hover .news-card__image { transform: scale(1.04); }
+
+.news-card__body {
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex: 1;
+}
+
+.news-card__date {
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.news-card__title { font-size: 1.12rem; }
+
+.news-card__link {
+  margin-top: auto;
+  padding-top: var(--space-3);
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--color-accent);
+}
+
+.news-card__link:hover { text-decoration: underline; }
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  align-items: center;
+  text-align: center;
+}
+
+.stat-card__value {
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 1.9rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--color-accent);
+}
+
+.stat-card__label { color: var(--color-text-muted); font-weight: 500; }
 
 /* ---- Forms ---- */
 .form { display: flex; flex-direction: column; gap: var(--space-5); max-width: 640px; }
 .form-field { display: flex; flex-direction: column; gap: var(--space-2); }
-.form-field label { font-weight: 700; font-size: 0.9rem; }
+
+.form-field label {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--color-heading);
+}
 
 .form-field input,
 .form-field textarea,
 .form-field select {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  padding: var(--space-3);
+  padding: var(--space-3) var(--space-4);
   background: var(--color-surface);
+  color: var(--color-text);
+  transition: border-color 0.18s var(--ease-out), box-shadow 0.18s var(--ease-out);
 }
 
-.form-field textarea { min-height: 140px; resize: vertical; }
+.form-field input::placeholder,
+.form-field textarea::placeholder { color: var(--color-text-muted); }
+
+.form-field input:focus,
+.form-field textarea:focus,
+.form-field select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 18%, transparent);
+}
+
+.form-field textarea { min-height: 150px; resize: vertical; }
+
 .form-field--error input,
-.form-field--error textarea { border-color: #C0392B; }
-.form-field__error { color: #C0392B; font-size: 0.85rem; }
+.form-field--error textarea,
+.form-field--error select { border-color: #C0392B; }
+
+.form-field__error { color: #C0392B; font-size: 0.85rem; font-weight: 600; }
+
+@media (prefers-color-scheme: dark) {
+  .form-field--error input,
+  .form-field--error textarea,
+  .form-field--error select { border-color: #F1877C; }
+  .form-field__error { color: #F1877C; }
+}
 
 .form-field--honeypot { position: absolute; left: -9999px; top: -9999px; }
 
@@ -284,29 +581,47 @@
   border-radius: var(--radius-md);
   padding: var(--space-4);
   font-weight: 600;
+  border: 1px solid transparent;
 }
 
-.form-success { background: #E4F5EE; color: #1E6B4C; }
-.form-error { background: #FBEAEA; color: #A3231A; }
+.form-success { background: #E4F5EE; color: #14563C; border-color: #B8E3D0; }
+.form-error { background: #FBEAEA; color: #8E1F17; border-color: #F0C4C0; }
+
+@media (prefers-color-scheme: dark) {
+  .form-success { background: #10281F; color: #7FD9B4; border-color: #1D4736; }
+  .form-error { background: #2A1512; color: #F1877C; border-color: #4A2320; }
+}
 
 /* ---- Footer ---- */
 .site-footer {
   background: var(--color-primary-dark);
-  color: #fff;
+  color: var(--color-on-dark);
   margin-top: var(--space-9);
 }
 
 .footer__grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-6);
-  padding-block: var(--space-8);
+  grid-template-columns: 1.6fr 1fr 1fr 1.1fr;
+  gap: var(--space-7);
+  padding-block: var(--space-9);
 }
 
-.footer__col h2 { color: #fff; font-size: 1.05rem; margin-bottom: var(--space-3); }
-.footer__col ul { display: flex; flex-direction: column; gap: var(--space-2); }
-.footer__col a { color: rgba(255,255,255,0.85); }
-.footer__col a:hover { color: #fff; text-decoration: underline; }
+.footer__col .brand__name { color: var(--color-on-dark); }
+.footer__col .text-muted { color: rgba(255, 255, 255, 0.7); }
+
+.footer__col h2 {
+  color: var(--color-on-dark);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-4);
+}
+
+.footer__col ul { display: flex; flex-direction: column; gap: var(--space-3); }
+.footer__col li { color: rgba(255, 255, 255, 0.7); font-size: 0.92rem; }
+.footer__col a { color: rgba(255, 255, 255, 0.7); font-size: 0.92rem; transition: color 0.18s var(--ease-out); }
+.footer__col a:hover { color: var(--color-on-dark); }
 
 .footer__bottom {
   display: flex;
@@ -314,15 +629,16 @@
   align-items: center;
   flex-wrap: wrap;
   gap: var(--space-3);
-  padding-block: var(--space-4);
-  border-top: 1px solid rgba(255,255,255,0.15);
+  padding-block: var(--space-5);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
   font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
 }
 
-.footer__legal { display: flex; gap: var(--space-4); }
+.footer__legal { display: flex; gap: var(--space-5); }
 
 @media (max-width: 900px) {
-  .footer__grid { grid-template-columns: repeat(2, 1fr); }
+  .footer__grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-6); }
 }
 
 @media (max-width: 560px) {

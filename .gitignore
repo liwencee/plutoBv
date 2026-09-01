@@ -3,3 +3,7 @@ Thumbs.db
 *.log
 .vscode/
 .idea/
+
+# Full-resolution source photography (85MB). Optimised copies live in
+# assets/images/ and are what the site actually serves.
+images/
