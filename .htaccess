@@ -21,23 +21,26 @@ ErrorDocument 404 /404.html
   RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
   RewriteRule ^ / [R=301,L]
 
-  RewriteCond %{THE_REQUEST} \s/+(.+?)/?index\.html[\s?] [NC]
-  RewriteRule ^ /%1/ [R=301,L]
-
   RewriteCond %{THE_REQUEST} \s/+(.+?)\.html[\s?] [NC]
   RewriteRule ^ /%1 [R=301,L]
 
-  # 2. "services" is both services.html and a services/ directory. Without
-  #    this, mod_dir would bounce /services to /services/ before the rule
-  #    below ever gets to serve services.html.
-  DirectorySlash Off
-
-  # 3. Serve /page from page.html when that file exists. Anything with no
+  # 2. Serve /page from page.html when that file exists. Anything with no
   #    matching .html (assets, the PHP endpoints, genuinely missing pages)
   #    falls through untouched to the normal 404.
+  #
+  #    The test is %{REQUEST_FILENAME}.html rather than
+  #    %{DOCUMENT_ROOT}/$1.html: the DOCUMENT_ROOT form does not resolve on
+  #    LiteSpeed, which is what Hostinger runs, so the condition silently
+  #    failed and every clean URL 404'd while the redirect above kept
+  #    sending visitors to those URLs.
+  #
+  #    There is deliberately no !-d condition here. "services" is both
+  #    services.html and a services/ directory; excluding directories would
+  #    skip this rule for /services and let mod_dir bounce it to /services/
+  #    instead of serving the page.
   RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{DOCUMENT_ROOT}/$1.html -f
-  RewriteRule ^(.+?)/?$ /$1.html [L]
+  RewriteCond %{REQUEST_FILENAME}.html -f
+  RewriteRule ^(.*)$ $1.html [L]
 </IfModule>
 
 <IfModule mod_headers.c>
