@@ -41,7 +41,41 @@ footer of every page.
   first — `validate_upload()` in `backend/lib/helpers.php` refuses to accept
   a file if `finfo_open` isn't available.
 
-## Deployment (Hostinger shared hosting)
+## Deployment option A - Git (recommended)
+
+hPanel can pull straight from GitHub, which means deploying is `git push`
+and nothing else.
+
+1. In hPanel, open your website and go to **Advanced → Git**.
+2. Click **Connect with GitHub** and authorise the Hostinger GitHub app for
+   the `liwencee/plutoBv` repository.
+3. Set the branch to `main` and leave the root directory as `public_html`.
+4. Deploy. After that, every push to `main` triggers an automatic
+   deployment via webhook; the **Redeploy** button on the Git page forces
+   one by hand.
+
+There is no build step, so what is committed is what gets served.
+
+**The catch, and why the `.htaccess` matters.** Unlike an FTP upload, where
+you choose which folders to send, a Git deploy puts the *entire repository*
+into `public_html` - including `.git`, `docs/`, `scripts/`, and `README.md`.
+An exposed `.git` directory is genuinely dangerous: anyone who finds it can
+reconstruct the full source history. The root `.htaccess` therefore denies
+HTTP access to all of it (dotfiles and dot-directories, `docs/`, `scripts/`,
+`images/`, `.superpowers/`, `*.md`, `LICENSE`, and `*.test.php`).
+
+So: `.htaccess` is not optional with this deployment method. After the first
+deploy, check these all return 403 or 404 rather than content:
+
+- `https://plutobv.co.uk/.git/config`
+- `https://plutobv.co.uk/README.md`
+- `https://plutobv.co.uk/docs/`
+- `https://plutobv.co.uk/backend/lib/helpers.php`
+
+If any of them returns real content, the `.htaccess` is not being applied -
+stop and fix that before sharing the site.
+
+## Deployment option B - File Manager or FTP
 
 1. In hPanel, open **File Manager** (or connect via FTP/SFTP with the
    credentials from hPanel → Files → FTP Accounts).

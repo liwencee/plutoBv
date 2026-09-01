@@ -20,3 +20,39 @@ ErrorDocument 404 /404.html
 </IfModule>
 
 Options -Indexes
+
+# ---- Repository files must never be served ----
+# Deploying by FTP means hand-picking which folders to upload. Deploying by
+# Git means the WHOLE repository lands in public_html, including .git, the
+# docs, the checker scripts and the README. That is fine as long as none of
+# it is reachable over HTTP, which is what the rules below enforce.
+#
+# .git in a web root is the serious one: if it is readable, anyone can
+# reconstruct the entire source history, and any credential ever committed
+# comes with it.
+
+# Block dotfiles and dot-directories (.git, .gitignore, .superpowers, .env).
+# .well-known stays reachable so Let's Encrypt / SSL renewal keeps working.
+RedirectMatch 404 (?i)^/\.(?!well-known)
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Project directories that exist for development, not for visitors.
+  RewriteRule ^(docs|scripts|images|\.superpowers)(/|$) - [F,L]
+</IfModule>
+
+# Documentation and source files that carry no value to a visitor. README.md
+# in particular describes the anti-spam design and backend paths.
+<FilesMatch "(?i)\.(md|json|lock|log|yml|yaml|ini|sh|bak|dist|sql)$">
+  Require all denied
+</FilesMatch>
+
+<FilesMatch "(?i)^(LICENSE|README|CHANGELOG|composer\.(json|lock)|package(-lock)?\.json)$">
+  Require all denied
+</FilesMatch>
+
+# The PHP test harness is a development tool, not an endpoint.
+<FilesMatch "(?i)\.test\.php$">
+  Require all denied
+</FilesMatch>
