@@ -502,15 +502,19 @@
 
 .news-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-4px); }
 
+/* The card clips, so the image scales inside its frame rather than pushing
+   the layout around. Same 0.7s curve as the hero images, so every zoom on
+   the site feels like one behaviour. */
 .news-card__image {
   aspect-ratio: 4 / 3;
   object-fit: cover;
   width: 100%;
   background: var(--color-surface-2);
-  transition: transform 0.5s var(--ease-out);
+  transition: transform 0.7s var(--ease-out);
 }
 
-.news-card:hover .news-card__image { transform: scale(1.04); }
+.news-card:hover .news-card__image,
+.news-card:focus-within .news-card__image { transform: scale(1.06); }
 
 .news-card__body {
   padding: var(--space-5);

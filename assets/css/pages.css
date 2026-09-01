@@ -56,12 +56,30 @@
   margin-top: var(--space-3);
 }
 
-.hero__media img {
+/* The frame owns the radius, the clipping and the shadow so the image can
+   scale on hover *inside* it. The shadow has to live here rather than on the
+   <img>, because overflow:hidden on this element would clip a shadow drawn
+   by the child. */
+.hero__media {
+  position: relative;
   border-radius: var(--radius-lg);
+  overflow: hidden;
   box-shadow: var(--shadow-lg);
+  /* own stacking context, so the rounded corners actually clip the
+     transformed child in Safari */
+  isolation: isolate;
+}
+
+.hero__media img {
+  border-radius: 0;
+  box-shadow: none;
   width: 100%;
   height: auto;
+  transition: transform 0.7s var(--ease-out);
 }
+
+.hero__media:hover img,
+.hero__media:focus-within img { transform: scale(1.05); }
 
 @media (max-width: 900px) {
   .hero__grid { grid-template-columns: 1fr; gap: var(--space-6); }
@@ -327,10 +345,10 @@
 }
 
 /* ---- Hero slider ---- */
+/* No radius or shadow here: .hero__media above is the frame, and repeating
+   them would double the shadow. */
 .hero-slider {
   position: relative;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
   overflow: hidden;
   aspect-ratio: 3 / 2;
   background: var(--color-surface-2);
