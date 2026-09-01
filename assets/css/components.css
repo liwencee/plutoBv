@@ -705,3 +705,25 @@
 @media (max-width: 560px) {
   .footer__grid { grid-template-columns: 1fr; }
 }
+
+/* ---- reCAPTCHA ----
+   Google renders the widget in a fixed-size iframe (302x76). It cannot be
+   restyled, so the job here is just to let it sit in the form rhythm and
+   scale down on narrow phones rather than pushing the layout sideways. */
+.form-field--captcha { gap: var(--space-2); }
+
+.form-field--captcha .g-recaptcha {
+  /* the widget has its own internal padding; nudge it into line with the
+     inputs above it */
+  margin-left: -2px;
+}
+
+@media (max-width: 360px) {
+  .form-field--captcha .g-recaptcha {
+    transform: scale(0.88);
+    transform-origin: 0 0;
+    height: 68px;
+  }
+}
+
+.form-field__error[hidden] { display: none; }

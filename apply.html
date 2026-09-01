@@ -6,9 +6,9 @@
   <title>Apply Now | Plutobv</title>
   <meta name="description" content="Apply to join the Plutobv care and support staff team.">
   <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
-  <link rel="stylesheet" href="/assets/css/base.css?v=20260901h">
-  <link rel="stylesheet" href="/assets/css/components.css?v=20260901h">
-  <link rel="stylesheet" href="/assets/css/pages.css?v=20260901h">
+  <link rel="stylesheet" href="/assets/css/base.css?v=20260901i">
+  <link rel="stylesheet" href="/assets/css/components.css?v=20260901i">
+  <link rel="stylesheet" href="/assets/css/pages.css?v=20260901i">
 </head>
 <body>
   <!-- HEADER: shared block from Task 4 -->
@@ -107,7 +107,11 @@
             <input type="text" id="apply-website" name="website" tabindex="-1" autocomplete="off">
           </div>
           <input type="hidden" name="form_started" value="">
-          <div class="form-status" role="status" aria-live="polite"></div>
+          <div class="form-field form-field--captcha">
+        <div class="g-recaptcha" data-sitekey="6LfgF6MtAAAAABIgCdKWosO4tnQfIW-sOJ4VP4BM" data-callback="plutobvCaptchaDone" data-expired-callback="plutobvCaptchaExpired"></div>
+        <p class="form-field__error" data-captcha-error hidden>Please confirm you are not a robot.</p>
+      </div>
+      <div class="form-status" role="status" aria-live="polite"></div>
           <button class="btn btn--primary btn--lg" type="submit">Submit Application</button>
         </form>
       </div>
@@ -163,6 +167,7 @@
     </div>
   </footer>
 
-  <script src="/assets/js/main.js?v=20260901h"></script>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <script src="/assets/js/main.js?v=20260901i"></script>
 </body>
 </html>

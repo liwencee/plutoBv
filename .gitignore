@@ -9,3 +9,8 @@ Thumbs.db
 # Leading slash matters: a bare `images/` also matches assets/images/ at any
 # depth, which silently excluded every photo the site needs.
 /images/
+
+# Real secrets. config.example.php is the committed template; config.php holds
+# the live reCAPTCHA secret and must never be committed - this repo is public,
+# and git history would keep the value even after a later deletion.
+backend/lib/config.php

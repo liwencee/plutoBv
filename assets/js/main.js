@@ -192,6 +192,28 @@ document.querySelectorAll('[data-action="print"]').forEach(function (btn) {
       }
     });
 
+    /* reCAPTCHA. Checked here so an unticked box is caught before the upload
+       starts, rather than after a CV has been sent over a phone connection
+       only to be rejected. The server verifies the token independently -
+       this is a convenience, not the protection. */
+    var captcha = form.querySelector('.g-recaptcha');
+    var captchaError = form.querySelector('[data-captcha-error]');
+    if (captcha && window.grecaptcha && typeof grecaptcha.getResponse === 'function') {
+      var widgetId = captcha.getAttribute('data-widget-id');
+      var response;
+      try {
+        response = widgetId !== null ? grecaptcha.getResponse(Number(widgetId)) : grecaptcha.getResponse();
+      } catch (e) {
+        response = '';   // widget not finished rendering yet
+      }
+      if (!response) {
+        if (captchaError) captchaError.hidden = false;
+        valid = false;
+      } else if (captchaError) {
+        captchaError.hidden = true;
+      }
+    }
+
     return valid;
   }
 
@@ -215,6 +237,12 @@ document.querySelectorAll('[data-action="print"]').forEach(function (btn) {
       .then(function (result) {
         if (result.ok && result.data.success) {
           form.reset();
+          /* A reCAPTCHA token is single-use. Without this reset the box still
+             looks ticked after a successful send, but a second submission
+             would be rejected by Google with no visible reason. */
+          if (window.grecaptcha && typeof grecaptcha.reset === 'function') {
+            try { grecaptcha.reset(); } catch (e) {}
+          }
           if (status) {
             status.textContent = result.data.message || "Thanks — we've received your submission.";
             status.className = 'form-status form-success';
@@ -281,3 +309,19 @@ document.querySelectorAll('[data-action="print"]').forEach(function (btn) {
 
   start();
 })();
+
+/* ---- reCAPTCHA callbacks ----
+   Named on the widget via data-callback / data-expired-callback, so they must
+   be global. They only clear or restore the inline error; the actual gate is
+   in validateForm above, and the real check is server-side. */
+window.plutobvCaptchaDone = function () {
+  document.querySelectorAll('[data-captcha-error]').forEach(function (el) {
+    el.hidden = true;
+  });
+};
+
+window.plutobvCaptchaExpired = function () {
+  document.querySelectorAll('[data-captcha-error]').forEach(function (el) {
+    el.hidden = false;
+  });
+};

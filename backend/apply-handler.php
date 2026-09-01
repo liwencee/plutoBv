@@ -18,6 +18,15 @@ if (is_submitted_too_fast($_POST) || !is_referer_allowed()) {
     respond(false, 'Something went wrong. Please try again.', $redirectUrl, 400);
 }
 
+[$captchaOk, $captchaError] = verify_recaptcha(
+    (string)($_POST['g-recaptcha-response'] ?? ''),
+    (string)($_SERVER['REMOTE_ADDR'] ?? '')
+);
+
+if (!$captchaOk) {
+    respond(false, $captchaError, $redirectUrl, 422);
+}
+
 $name = sanitize_text((string)($_POST['name'] ?? ''), 200);
 $email = trim((string)($_POST['email'] ?? ''));
 $phone = sanitize_text((string)($_POST['phone'] ?? ''), 40);
