@@ -18,6 +18,12 @@ walk(root);
 const linkPattern = /(?:href|src|action)="(\/[^"]*)"/g;
 let brokenCount = 0;
 
+// <source srcset> inside <picture>. Worth checking separately: a broken
+// WebP path here does not show up as a visibly broken image, because the
+// browser quietly falls back to the JPEG. It would just silently ship the
+// larger file forever.
+const srcsetPattern = /srcset="([^"]+)"/g;
+
 for (const file of htmlFiles) {
   const content = fs.readFileSync(file, 'utf8');
   let match;
@@ -28,6 +34,18 @@ for (const file of htmlFiles) {
     if (!fs.existsSync(targetPath)) {
       console.log(`BROKEN: ${path.relative(root, file)} -> ${link}`);
       brokenCount++;
+    }
+  }
+
+  while ((match = srcsetPattern.exec(content))) {
+    for (const candidate of match[1].split(',')) {
+      const url = candidate.trim().split(/\s+/)[0];
+      if (!url.startsWith('/')) continue;
+      const targetPath = path.join(root, url.split('?')[0]);
+      if (!fs.existsSync(targetPath)) {
+        console.log(`BROKEN srcset: ${path.relative(root, file)} -> ${url}`);
+        brokenCount++;
+      }
     }
   }
 }

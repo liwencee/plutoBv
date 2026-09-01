@@ -6,4 +6,6 @@ Thumbs.db
 
 # Full-resolution source photography (85MB). Optimised copies live in
 # assets/images/ and are what the site actually serves.
-images/
+# Leading slash matters: a bare `images/` also matches assets/images/ at any
+# depth, which silently excluded every photo the site needs.
+/images/

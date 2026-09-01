@@ -157,7 +157,10 @@ body, h1, h2, h3, h4, p, figure, blockquote, dl, dd { margin: 0; }
    `ul[class]` form of this reset missed the unclassed nav and footer lists
    and left default bullets showing on them. */
 ul, ol { margin: 0; padding: 0; list-style: none; }
-img, picture, svg { display: block; max-width: 100%; }
+img, svg { display: block; max-width: 100%; }
+/* The <picture> wrapper should not form a box of its own; the <img>
+   inside it is what the layout rules target. */
+picture { display: contents; }
 button, input, textarea, select { font: inherit; color: inherit; }
 a { color: inherit; text-decoration: none; }
 

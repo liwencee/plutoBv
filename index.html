@@ -6,9 +6,12 @@
   <title>Plutobv | Health &amp; Social Care Staffing</title>
   <meta name="description" content="Plutobv supplies vetted, trained health and social care staff to local authorities, the NHS, and private care providers across the UK.">
   <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
-  <link rel="stylesheet" href="/assets/css/base.css?v=20260901b">
-  <link rel="stylesheet" href="/assets/css/components.css?v=20260901b">
-  <link rel="stylesheet" href="/assets/css/pages.css?v=20260901b">
+  <!-- LCP element on this page. type= means browsers without WebP skip it
+       and fetch the JPEG through the normal <picture> path instead. -->
+  <link rel="preload" as="image" href="/assets/images/hero-team.webp" type="image/webp" fetchpriority="high">
+  <link rel="stylesheet" href="/assets/css/base.css?v=20260901c">
+  <link rel="stylesheet" href="/assets/css/components.css?v=20260901c">
+  <link rel="stylesheet" href="/assets/css/pages.css?v=20260901c">
 </head>
 <body>
   <!-- HEADER: shared block from Task 4, Home link marked current -->
@@ -83,13 +86,22 @@
           <div class="hero-slider" data-hero-slider>
             <ul class="hero-slider__track">
               <li class="hero-slider__slide is-active" id="hero-slide-1">
-                <img src="/assets/images/hero-team.jpg" alt="A Plutobv care worker smiling with an elderly client over breakfast at her kitchen table" width="720" height="480" loading="eager">
+                <picture>
+                  <source srcset="/assets/images/hero-team.webp" type="image/webp">
+                  <img src="/assets/images/hero-team.jpg" alt="A Plutobv care worker smiling with an elderly client over breakfast at her kitchen table" width="720" height="480" loading="eager" decoding="async">
+                </picture>
               </li>
               <li class="hero-slider__slide" id="hero-slide-2">
-                <img src="/assets/images/hero-slide-2.jpg" alt="A Plutobv care worker gently holding an elderly client's hands in both of her own" width="720" height="480" loading="lazy">
+                <picture>
+                  <source srcset="/assets/images/hero-slide-2.webp" type="image/webp">
+                  <img src="/assets/images/hero-slide-2.jpg" alt="A Plutobv care worker gently holding an elderly client's hands in both of her own" width="720" height="480" loading="lazy" decoding="async">
+                </picture>
               </li>
               <li class="hero-slider__slide" id="hero-slide-3">
-                <img src="/assets/images/hero-slide-3.jpg" alt="Two Plutobv clinical staff reviewing a client's notes together on a ward" width="720" height="480" loading="lazy">
+                <picture>
+                  <source srcset="/assets/images/hero-slide-3.webp" type="image/webp">
+                  <img src="/assets/images/hero-slide-3.jpg" alt="Two Plutobv clinical staff reviewing a client's notes together on a ward" width="720" height="480" loading="lazy" decoding="async">
+                </picture>
               </li>
             </ul>
             <div class="hero-slider__dots" aria-label="Hero image slides">
@@ -237,7 +249,10 @@
         </div>
         <div class="card-grid card-grid--3">
           <article class="news-card">
-            <img class="news-card__image" src="/assets/images/news-01.jpg" alt="" loading="lazy">
+            <picture>
+              <source srcset="/assets/images/news-01.webp" type="image/webp">
+              <img class="news-card__image" src="/assets/images/news-01.jpg" alt="" loading="lazy" decoding="async">
+            </picture>
             <div class="news-card__body">
               <span class="news-card__date">30 Aug 2026</span>
               <h3 class="news-card__title">What Live-in Care Really Looks Like Day to Day</h3>
@@ -245,7 +260,10 @@
             </div>
           </article>
           <article class="news-card">
-            <img class="news-card__image" src="/assets/images/news-02.jpg" alt="" loading="lazy">
+            <picture>
+              <source srcset="/assets/images/news-02.webp" type="image/webp">
+              <img class="news-card__image" src="/assets/images/news-02.jpg" alt="" loading="lazy" decoding="async">
+            </picture>
             <div class="news-card__body">
               <span class="news-card__date">20 Aug 2026</span>
               <h3 class="news-card__title">Domiciliary Care: Support That Fits Around Your Life</h3>
@@ -253,7 +271,10 @@
             </div>
           </article>
           <article class="news-card">
-            <img class="news-card__image" src="/assets/images/news-03.jpg" alt="" loading="lazy">
+            <picture>
+              <source srcset="/assets/images/news-03.webp" type="image/webp">
+              <img class="news-card__image" src="/assets/images/news-03.jpg" alt="" loading="lazy" decoding="async">
+            </picture>
             <div class="news-card__body">
               <span class="news-card__date">5 Aug 2026</span>
               <h3 class="news-card__title">Why Companionship Care Matters More Than We Think</h3>
@@ -328,6 +349,6 @@
     </div>
   </footer>
 
-  <script src="/assets/js/main.js?v=20260901b"></script>
+  <script src="/assets/js/main.js?v=20260901c"></script>
 </body>
 </html>
