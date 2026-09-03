@@ -72,9 +72,9 @@ When adding a page, link to it without the extension (`href="/new-page"`).
 - Coverage area: search for `[Your Coverage Area]` (on `areas-we-support.html`)
 - Testimonial quotes: search for `[Client testimonial goes here]`
 
-Address (3 Spencer Parade, Northampton NN1 5AA) and phone (07932 790842) are
-now live across the site. The phone is wired as a `tel:` link in the topbar and
-footer of every page.
+Address (Flat 2, 4 West Street Walk, Northampton NN1 5BS, United Kingdom) and
+phone (07932 790842) are now live across the site. The phone is wired as a
+`tel:` link in the topbar and footer of every page.
 
 ## Prerequisites
 
