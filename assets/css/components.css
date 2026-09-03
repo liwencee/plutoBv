@@ -727,3 +727,25 @@
 }
 
 .form-field__error[hidden] { display: none; }
+
+/* ---- Brand highlight on dark surfaces ----
+   The logo's lime is unusable on the light page (1.36:1 against the
+   background), so in light mode it would otherwise never appear at all and
+   the site would not read as the brand. These are the surfaces that are dark
+   in BOTH themes, where it is not only legible but the strongest colour
+   available - the same role it plays in the logo, where it is the spark
+   against the blue sphere rather than the sphere itself. */
+.cta-band .btn--primary {
+  background: var(--color-highlight);
+  color: var(--color-on-highlight);   /* 10.70:1 */
+}
+
+.cta-band .btn--primary:hover {
+  background: #E2ED72;
+  color: var(--color-on-highlight);
+}
+
+/* Footer section labels pick up the lime at 8.04:1 on the navy. */
+.footer__col h2 { color: var(--color-highlight); }
+
+.topbar__contact a:hover { color: var(--color-highlight); text-decoration: underline; }
