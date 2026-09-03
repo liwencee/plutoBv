@@ -19,10 +19,11 @@
    leaves --font-sans and --space-* undefined on a default page load, which
    renders the whole site as unstyled serif text with no padding.
 
-   Light is the default and dark follows the visitor's OS setting. The site
-   ships no theme-switch button, so there is deliberately no data-theme
-   scripting to go stale; :root[data-theme=...] is honoured if an attribute
-   is ever set, but nothing on the site sets one today. */
+   The site is light for everyone. It deliberately does NOT follow the
+   visitor's OS dark-mode setting: this is a light brand, and a visitor whose
+   system is dark should still get the white/off-white design. A dark palette
+   is kept below under [data-theme="dark"] but nothing on the site sets that
+   attribute today. */
 :root {
   /* --- Theme-independent --- */
   --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont,
@@ -109,40 +110,18 @@
                0 18px 48px rgba(13, 44, 74, 0.14);
 }
 
-/* Dark theme: colours and shadows only. Applied when the visitor's OS asks
-   for dark, or when data-theme="dark" is set explicitly. */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    color-scheme: dark;
+/* Dark theme, opt-in only.
 
-    --color-primary: #5FC0E8;
-    --color-primary-dark: #06263A;
-    --color-primary-light: #10293A;
-    /* On a dark page the logo's lime finally works as a text colour
-       (12.61:1), so the dark theme leads with it the way the logo does:
-       blue field, lime spark. */
-    --color-accent: #D4E050;
-    --color-accent-dark: #E2ED72;
-    --color-on-accent: #0F1620;
-    --color-bg: #0F1620;
-    --color-surface: #161F2B;
-    --color-surface-2: #1D2836;
-    --color-text: #E8ECF1;
-    --color-text-muted: #A8B4C4;
-    --color-border: #26313F;
-    --color-heading: #CFE6F4;
-    --color-highlight: #D4E050;
-    --color-on-highlight: #0F1620;
+   This was previously wired to @media (prefers-color-scheme: dark), which
+   meant anyone whose operating system is set to dark saw the dark palette
+   automatically. The brand is a light one - white and off-white with the
+   logo blue - so the site now always renders light regardless of the OS
+   setting, and the page background stays off-white for everyone.
 
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35),
-                 0 2px 6px rgba(0, 0, 0, 0.28);
-    --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.38),
-                 0 8px 24px rgba(0, 0, 0, 0.42);
-    --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.42),
-                 0 18px 48px rgba(0, 0, 0, 0.52);
-  }
-}
-
+   The palette below is kept and still applies if <html data-theme="dark">
+   is ever set. To restore automatic dark mode, wrap this block in
+   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { ... } }
+   again. */
 :root[data-theme="dark"] {
   color-scheme: dark;
 

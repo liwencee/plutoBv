@@ -17,7 +17,6 @@ Usage:
 
 import http.server
 import os
-import socketserver
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -52,9 +51,21 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         sys.stderr.write("%s %s\n" % (self.address_string(), fmt % args))
 
 
+class Server(http.server.ThreadingHTTPServer):
+    """Threaded on purpose.
+
+    A single-threaded server deadlocks against a real browser: the browser
+    holds a keep-alive connection open after fetching the HTML, and every
+    stylesheet, script and image behind it waits for that connection to
+    close. The page renders unstyled and appears to hang forever. One thread
+    per connection is what makes the local preview behave like the host."""
+
+    allow_reuse_address = True
+    daemon_threads = True
+
+
 if __name__ == "__main__":
-    socketserver.TCPServer.allow_reuse_address = True
-    with socketserver.TCPServer(("", PORT), Handler) as httpd:
+    with Server(("", PORT), Handler) as httpd:
         print(f"Plutobv preview: http://localhost:{PORT}/")
         print("Extensionless URLs resolve the same way they do on Hostinger.")
         print("Ctrl+C to stop.")

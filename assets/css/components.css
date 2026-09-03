@@ -601,12 +601,13 @@
 
 .form-field__error { color: #C0392B; font-size: 0.85rem; font-weight: 600; }
 
-@media (prefers-color-scheme: dark) {
-  .form-field--error input,
-  .form-field--error textarea,
-  .form-field--error select { border-color: #F1877C; }
-  .form-field__error { color: #F1877C; }
-}
+/* Tied to the opt-in dark theme, not to the OS setting. Left on
+   prefers-color-scheme these would have fired for anyone whose system is
+   dark, painting dark-theme form messages onto the light page. */
+:root[data-theme="dark"] .form-field--error input,
+:root[data-theme="dark"] .form-field--error textarea,
+:root[data-theme="dark"] .form-field--error select { border-color: #F1877C; }
+:root[data-theme="dark"] .form-field__error { color: #F1877C; }
 
 .form-field--honeypot { position: absolute; left: -9999px; top: -9999px; }
 
@@ -620,10 +621,8 @@
 .form-success { background: #E4F5EE; color: #14563C; border-color: #B8E3D0; }
 .form-error { background: #FBEAEA; color: #8E1F17; border-color: #F0C4C0; }
 
-@media (prefers-color-scheme: dark) {
-  .form-success { background: #10281F; color: #7FD9B4; border-color: #1D4736; }
-  .form-error { background: #2A1512; color: #F1877C; border-color: #4A2320; }
-}
+:root[data-theme="dark"] .form-success { background: #10281F; color: #7FD9B4; border-color: #1D4736; }
+:root[data-theme="dark"] .form-error { background: #2A1512; color: #F1877C; border-color: #4A2320; }
 
 /* ---- Footer ---- */
 .site-footer {
